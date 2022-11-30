@@ -1,0 +1,19 @@
+{
+	"version": "0.1.0",
+	"configurations": [
+		{
+			"name": "Mocha",
+			"type": "node",
+			"program": "${workspaceFolder}/node_modules/ts-mocha/bin/ts-mocha",
+			"stopOnEntry": false,
+			"args": [
+        "-p",
+        "${workspaceFolder}/tsconfig.testing.json",
+        "${workspaceFolder}/test/**/*.spec.ts"
+      ],
+			"cwd": ".",
+			"runtimeExecutable": null,
+			"env": { "NODE_ENV": "production"}
+		}
+	]
+}

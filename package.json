@@ -1,0 +1,56 @@
+{
+  "name": "dct_visualization",
+  "version": "1.0.0",
+  "description": "Tool for visualization of DCT",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --config webpack/webpack.config.dev.js",
+    "build": "webpack --config webpack/webpack.config.prod.js",
+    "test": "ts-mocha -p tsconfig.testing.json test/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bilasyurii/dct_visualization.git"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Yurii Bilas",
+    "url": "https://github.com/bilasyurii"
+  },
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/bilasyurii/dct_visualization/issues"
+  },
+  "homepage": "https://github.com/bilasyurii/dct_visualization#readme",
+  "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/file-saver": "^2.0.5",
+    "@types/mocha": "^9.1.1",
+    "@types/sinon": "^10.0.13",
+    "canvas": "^2.9.3",
+    "chai": "^4.3.6",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^10.2.4",
+    "html-webpack-plugin": "^5.5.0",
+    "jsdom": "^20.0.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^10.0.0",
+    "sinon": "^14.0.0",
+    "ts-loader": "^9.2.6",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^4.5.5",
+    "webpack": "^5.69.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "phaser": "^3.55.2"
+  },
+  "mocha": {
+    "require": [
+      "jsdom-global/register"
+    ]
+  }
+}

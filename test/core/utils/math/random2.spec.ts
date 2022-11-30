@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Random2 } from "../../../../src/utils/math/random2";
+import { Random2 } from "../../../../src/core/utils/math/random2";
 
 describe("Random2", function () {
   it("should produce appropriate value type when integer is requested", function () {

@@ -19,12 +19,37 @@ describe("Lexer", function () {
       },
       {
         type: TokenType.Number,
+        value: "1",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: "{",
+      },
+      {
+        type: TokenType.Number,
+        value: "1",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: ",",
+      },
+      {
+        type: TokenType.Number,
         value: "0",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: "}",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: "->",
       },
     ];
 
     // act
     const wrap = lexer.parse(input);
+    console.log(wrap);
 
     // assert
     expect(1).to.be.equal(1);

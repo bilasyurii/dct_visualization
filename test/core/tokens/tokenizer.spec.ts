@@ -59,6 +59,30 @@ describe("Tokenizer", function () {
     expectTokenToBeEqual(tokens[2], TokenType.Punctuation, ")");
   });
 
+  it("should parse a summation set", function () {
+    // arrange
+    const input = "{ -(x(15), x(14)) }";
+
+    // act
+    const tokens = tokenizer.tokenize(input);
+
+    // assert
+    expectTokenToBeEqual(tokens[0], TokenType.Punctuation, "{");
+    expectTokenToBeEqual(tokens[1], TokenType.Sign, "-");
+    expectTokenToBeEqual(tokens[2], TokenType.Punctuation, "(");
+    expectTokenToBeEqual(tokens[3], TokenType.Text, "x");
+    expectTokenToBeEqual(tokens[4], TokenType.Punctuation, "(");
+    expectTokenToBeEqual(tokens[5], TokenType.Number, "15");
+    expectTokenToBeEqual(tokens[6], TokenType.Punctuation, ")");
+    expectTokenToBeEqual(tokens[7], TokenType.Punctuation, ",");
+    expectTokenToBeEqual(tokens[8], TokenType.Text, "x");
+    expectTokenToBeEqual(tokens[9], TokenType.Punctuation, "(");
+    expectTokenToBeEqual(tokens[10], TokenType.Number, "14");
+    expectTokenToBeEqual(tokens[11], TokenType.Punctuation, ")");
+    expectTokenToBeEqual(tokens[12], TokenType.Punctuation, ")");
+    expectTokenToBeEqual(tokens[13], TokenType.Punctuation, "}");
+  });
+
   it("should throw error when unknown symbol is met", function () {
     // arrange
     const input = "{*}";

@@ -140,6 +140,7 @@ export class Tokenizer {
 
       case "+":
         this.addToken(TokenType.Sign, "+");
+        this.advance();
         break;
 
       case "-":
@@ -155,6 +156,7 @@ export class Tokenizer {
         switch (nextSymbol) {
           case ">":
             this.addToken(TokenType.Punctuation, "->");
+            this.advance();
             break;
 
           default:
@@ -165,10 +167,9 @@ export class Tokenizer {
 
       default:
         this.addToken(TokenType.Punctuation, symbol);
+        this.advance();
         break;
     }
-
-    this.advance();
   }
 
   private addToken(type: TokenType, value: string): void {

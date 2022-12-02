@@ -45,6 +45,38 @@ describe("Lexer", function () {
         type: TokenType.Punctuation,
         value: "->",
       },
+      {
+        type: TokenType.Punctuation,
+        value: "(",
+      },
+      {
+        type: TokenType.Sign,
+        value: "+",
+      },
+      {
+        type: TokenType.Number,
+        value: "2",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: ")",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: "(",
+      },
+      {
+        type: TokenType.Text,
+        value: "X",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: ")",
+      },
+      {
+        type: TokenType.Punctuation,
+        value: "{",
+      },
     ];
 
     // act

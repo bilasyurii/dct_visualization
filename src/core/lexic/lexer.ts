@@ -36,6 +36,9 @@ export class Lexer {
 
   private startParsing(): void {
     this.readScaledPointSet();
+    this.readArrow();
+    this.readSumSet();
+    this.readXSeparator();
   }
 
   private readScaledPointSet(): void {
@@ -50,6 +53,34 @@ export class Lexer {
         break;
       }
     }
+  }
+
+  private readArrow(): void {
+    this.expectToken(this.peekToken(), TokenType.Punctuation, "->");
+  }
+
+  private readSumSet(): void {
+    this.expectToken(this.peekToken(), TokenType.Punctuation, "(");
+
+    while (true) {
+      if (this.isAtEnd()) {
+        break;
+      }
+
+      const hasMore = this.readSumSetElement();
+
+      if (!hasMore) {
+        break;
+      }
+    }
+
+    this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+  }
+
+  private readXSeparator(): void {
+    this.expectToken(this.peekToken(), TokenType.Punctuation, "(");
+    this.expectToken(this.peekToken(), TokenType.Text, "X");
+    this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
   }
 
   // returns true when there are more points to read
@@ -109,6 +140,19 @@ export class Lexer {
     const y = this.getNumber();
     this.expectToken(this.peekToken(), TokenType.Punctuation, "}");
     return new Point(x, y);
+  }
+
+  private readSumSetElement(): boolean {
+    const token = this.getCurrentToken();
+
+    if (token.type === TokenType.Punctuation && token.value === ")") {
+      return false;
+    }
+
+    const signedNumber = this.readSignedNumber(true);
+    this.sumSet.addSignedNumber(signedNumber);
+
+    return true;
   }
 
   private expectToken(token: IToken, expectedType: TokenType, expectedValue: string): void {

@@ -1,12 +1,12 @@
 import { SymbolType } from "./symbol-type.enum";
 
 export class SymbolUtils {
-  private static numeric0: number = '0'.charCodeAt(0);
-  private static numeric9: number = '9'.charCodeAt(0);
-  private static alphabeticCodeLowerA: number = 'a'.charCodeAt(0);
-  private static alphabeticCodeLowerZ: number = 'z'.charCodeAt(0);
-  private static alphabeticCodeUpperA: number = 'A'.charCodeAt(0);
-  private static alphabeticCodeUpperZ: number = 'Z'.charCodeAt(0);
+  private static numeric0: number = "0".charCodeAt(0);
+  private static numeric9: number = "9".charCodeAt(0);
+  private static alphabeticCodeLowerA: number = "a".charCodeAt(0);
+  private static alphabeticCodeLowerZ: number = "z".charCodeAt(0);
+  private static alphabeticCodeUpperA: number = "A".charCodeAt(0);
+  private static alphabeticCodeUpperZ: number = "Z".charCodeAt(0);
 
   private constructor() { }
 
@@ -26,19 +26,19 @@ export class SymbolUtils {
     }
 
     switch (symbol) {
-      case ' ':
-      case '\t':
-      case '\n':
+      case " ":
+      case "\t":
+      case "\n":
         return SymbolType.Tabulation;
 
-      case '{':
-      case '}':
-      case '(':
-      case ')':
-      case ',':
-      case '+':
-      case '-':
-      case '>':
+      case "{":
+      case "}":
+      case "(":
+      case ")":
+      case ",":
+      case "+":
+      case "-":
+      case ">":
         return SymbolType.Special;
 
       default:

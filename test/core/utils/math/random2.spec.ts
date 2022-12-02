@@ -11,7 +11,7 @@ describe("Random2", function () {
   });
 
   it("should produce appropriate value type when bool is requested", function () {
-    expect(new Random2().boolean()).to.be.a('boolean');
+    expect(new Random2().boolean()).to.be.a("boolean");
   });
 
   it("should produce float value in a specified range", function () {

@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 export function launchFPSMeter() {
-  const script = document.createElement('script');
+  const script = document.createElement("script");
 
   script.onload = function () {
     const stats = new Stats();
@@ -14,6 +14,6 @@ export function launchFPSMeter() {
     });
   };
 
-  script.src = '//mrdoob.github.io/stats.js/build/stats.min.js';
+  script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
   document.head.appendChild(script);
 }

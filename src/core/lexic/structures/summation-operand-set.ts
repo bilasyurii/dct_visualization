@@ -18,11 +18,19 @@ export class SummationOperandSet extends BaseLexicalStructure {
     return this.signType;
   }
 
+  public isPositive(): boolean {
+    return this.signType === SignType.Positive;
+  }
+
+  public isNegative(): boolean {
+    return this.signType === SignType.Negative;
+  }
+
   public getSummationOperands(): SummationOperand[] {
     return this.summationOperands.slice();
   }
 
-  public addSignedNumber(summationOperand: SummationOperand): void {
+  public addSummationOperand(summationOperand: SummationOperand): void {
     this.summationOperands.push(summationOperand);
   }
 }

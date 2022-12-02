@@ -6,6 +6,8 @@ import { ScaledPointSet } from "./structures/scaled-point-set";
 import { SignType } from "./structures/sign-type.enum";
 import { SignedNumber } from "./structures/signed-number";
 import { SumSet } from "./structures/sum-set";
+import { SummationOperand } from "./structures/summation-operand";
+import { SummationOperandSet } from "./structures/summation-operand-set";
 import { SummationSet } from "./structures/summation-set";
 import Wrap from "./structures/wrap";
 
@@ -39,6 +41,11 @@ export class Lexer {
     this.readArrow();
     this.readSumSet();
     this.readXSeparator();
+    this.readSummationSet();
+
+    if (!this.isAtEnd()) {
+      this.throwExpectedError(this.getCurrentToken(), "end of data");
+    }
   }
 
   private readScaledPointSet(): void {
@@ -47,9 +54,11 @@ export class Lexer {
         break;
       }
 
-      const hasMore = this.readScaledPoint();
+      const scaledPoint = this.readScaledPoint();
 
-      if (!hasMore) {
+      if (scaledPoint) {
+        this.scaledPointSet.addScaledPoint(scaledPoint);
+      } else {
         break;
       }
     }
@@ -67,9 +76,11 @@ export class Lexer {
         break;
       }
 
-      const hasMore = this.readSumSetElement();
+      const signedNumber = this.readSumSetElement();
 
-      if (!hasMore) {
+      if (signedNumber) {
+        this.sumSet.addSignedNumber(signedNumber);
+      } else {
         break;
       }
     }
@@ -83,18 +94,35 @@ export class Lexer {
     this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
   }
 
+  private readSummationSet(): void {
+    this.expectToken(this.peekToken(), TokenType.Punctuation, "{");
+
+    while (true) {
+      if (this.isAtEnd()) {
+        break;
+      }
+
+      const summationOperandSet = this.readSummationOperandSet();
+
+      if (summationOperandSet) {
+        this.summationSet.addSummationOperandSet(summationOperandSet);
+      } else {
+        break;
+      }
+    }
+
+    this.expectToken(this.peekToken(), TokenType.Punctuation, "}");
+  }
+
   // returns true when there are more points to read
-  private readScaledPoint(): boolean {
+  private readScaledPoint(): ScaledPoint {
     if (this.isArrow()) {
-      return false;
+      return null;
     }
 
     const signedNumber = this.readSignedNumber();
     const point = this.readPoint();
-    const scaledPoint = new ScaledPoint(signedNumber, point);
-    this.scaledPointSet.addScaledPoint(scaledPoint);
-
-    return true;
+    return new ScaledPoint(signedNumber, point);
   }
 
   private readSignedNumber(forceSign = false): SignedNumber {
@@ -142,17 +170,78 @@ export class Lexer {
     return new Point(x, y);
   }
 
-  private readSumSetElement(): boolean {
+  private readSumSetElement(): SignedNumber {
     const token = this.getCurrentToken();
 
     if (token.type === TokenType.Punctuation && token.value === ")") {
-      return false;
+      return null;
     }
 
-    const signedNumber = this.readSignedNumber(true);
-    this.sumSet.addSignedNumber(signedNumber);
+    return this.readSignedNumber(true);
+  }
 
-    return true;
+  private readSummationOperandSet(): SummationOperandSet {
+    const signToken = this.getCurrentToken();
+
+    if (signToken.type === TokenType.Punctuation && signToken.value === "}") {
+      return null;
+    }
+
+    this.expectTokenType(signToken, TokenType.Sign);
+    this.advance();
+
+    const summationOperandSet = new SummationOperandSet(this.getSignType(signToken));
+
+    let scopeToken = this.getCurrentToken();
+
+    if (scopeToken.type === TokenType.Punctuation && scopeToken.value === "(") {
+      this.advance();
+    } else {
+      scopeToken = null;
+    }
+
+    while (true) {
+      if (this.isAtEnd()) {
+        break;
+      }
+
+      const summationOperand = this.readSummationOperand();
+
+      if (summationOperand) {
+        summationOperandSet.addSummationOperand(summationOperand);
+      } else {
+        break;
+      }
+    }
+
+    if (scopeToken) {
+      this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+    }
+
+    return summationOperandSet;
+  }
+
+  private readSummationOperand(): SummationOperand {
+    const xToken = this.getCurrentToken();
+
+    if (xToken.type !== TokenType.Text || xToken.value !== "x") {
+      return null;
+    }
+
+    this.advance();
+    this.expectToken(this.peekToken(), TokenType.Punctuation, "(");
+
+    const number = this.getNumber();
+
+    this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+
+    const commaToken = this.getCurrentToken();
+
+    if (commaToken.type === TokenType.Punctuation && commaToken.value === ",") {
+      this.advance();
+    }
+
+    return new SummationOperand(number)
   }
 
   private expectToken(token: IToken, expectedType: TokenType, expectedValue: string): void {

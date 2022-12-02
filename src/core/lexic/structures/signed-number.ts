@@ -13,6 +13,10 @@ export class SignedNumber extends BaseLexicalStructure {
     this.absoluteValue = absoluteValue;
   }
 
+  public getSignType(): SignType {
+    return this.signType;
+  }
+
   public isPositive(): boolean {
     return this.signType === SignType.Positive;
   }

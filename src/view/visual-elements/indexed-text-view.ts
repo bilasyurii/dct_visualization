@@ -2,12 +2,26 @@ import { ViewConfig } from "../../config/view-config";
 
 export class IndexedTextView extends Phaser.GameObjects.Container {
   private text: PhaserText;
+  private bottomIndexText: PhaserText;
 
   constructor(scene: Scene, text: string, bottomIndexText: string) {
     super(scene);
 
     this.initText(text);
     this.initBottomIndexText(bottomIndexText);
+    this.setAnchorX(0);
+  }
+
+  public setAnchorX(value: number): this {
+    const text = this.text;
+    const bottomIndexText = this.bottomIndexText;
+    const textWidth = text.displayWidth;
+    const bottomIndexTextWidth = bottomIndexText.displayWidth;
+    const width = textWidth + bottomIndexTextWidth;
+    const offsetX = width * -value;
+    text.setPosition(offsetX, 0);
+    bottomIndexText.setPosition(offsetX + textWidth, text.displayHeight);
+    return this;
   }
 
   private initText(str: string): void {
@@ -23,9 +37,7 @@ export class IndexedTextView extends Phaser.GameObjects.Container {
   }
 
   private initBottomIndexText(str: string): void {
-    const text = this.text;
-    const indexText = this.createIndexText(str);
-    indexText.setPosition(text.displayWidth, text.displayHeight);
+    this.bottomIndexText = this.createIndexText(str);
   }
 
   private createIndexText(str: string): PhaserText {

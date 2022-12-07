@@ -11,6 +11,7 @@ export const ViewConfig = {
     fillColor: 0x000000,
     fillAlpha: 1,
     endSize: 10,
+    crossSize: 10,
   },
   primaryText: {
     fontFamily: "Times New Roman",
@@ -22,4 +23,8 @@ export const ViewConfig = {
     maxCount: 6,
     interval: 20,
   },
+  sumSet: {
+    maxCount: 6,
+  },
+  fpsMeter: false,
 };

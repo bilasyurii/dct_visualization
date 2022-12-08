@@ -9,7 +9,7 @@ import { SumSet } from "./structures/sum-set";
 import { SummationOperand } from "./structures/summation-operand";
 import { SummationOperandSet } from "./structures/summation-operand-set";
 import { SummationSet } from "./structures/summation-set";
-import Wrap from "./structures/wrap";
+import { Wrap } from "./structures/wrap";
 
 export class Lexer {
   private tokens: IToken[];

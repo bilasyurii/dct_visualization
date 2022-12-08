@@ -12,6 +12,10 @@
     "noImplicitAny": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "es2016",
+      "dom"
+    ]
   }
 }

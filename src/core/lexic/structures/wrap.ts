@@ -2,7 +2,7 @@ import { ScaledPointSet } from "./scaled-point-set";
 import { SumSet } from "./sum-set";
 import { SummationSet } from "./summation-set";
 
-export default class Wrap {
+export class Wrap {
   private scaledPointSet: ScaledPointSet;
   private sumSet: SumSet;
   private summationSet: SummationSet;

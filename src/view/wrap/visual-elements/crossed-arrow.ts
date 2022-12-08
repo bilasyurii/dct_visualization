@@ -1,4 +1,4 @@
-import { ViewConfig } from "../../config/view-config";
+import { ViewConfig } from "../../../config/view-config";
 import { Arrow } from "./arrow";
 
 export class CrossedArrow extends Arrow {

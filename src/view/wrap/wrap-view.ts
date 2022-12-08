@@ -1,7 +1,7 @@
-import { ViewConfig } from "../config/view-config";
-import { SignType } from "../core/lexic/structures/sign-type.enum";
-import Wrap from "../core/lexic/structures/wrap";
-import { Math2 } from "../core/utils/math/math2";
+import { ViewConfig } from "../../config/view-config";
+import { SignType } from "../../core/lexic/structures/sign-type.enum";
+import { Wrap } from "../../core/lexic/structures/wrap";
+import { Math2 } from "../../core/utils/math/math2";
 import { Arrow } from "./visual-elements/arrow";
 import { CrossedArrow } from "./visual-elements/crossed-arrow";
 import { IndexedTextView } from "./visual-elements/indexed-text-view";

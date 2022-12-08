@@ -1,4 +1,4 @@
-import { ViewConfig } from "../../config/view-config";
+import { ViewConfig } from "../../../config/view-config";
 import { RectangleView } from "./rectangle-view";
 
 export class RectangleWithTextView extends Phaser.GameObjects.Container {

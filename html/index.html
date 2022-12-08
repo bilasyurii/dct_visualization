@@ -10,14 +10,81 @@
     <style>
       body {
         margin: 0;
-        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
-      canvas {
+      #canvasContainer canvas {
         margin: 0px;
+      }
+
+      .main-wrapper {
+        display: flex;
+      }
+
+      .ui-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+      }
+
+      .ui-item {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .ui-item-element {
+        height: 250px;
+      }
+
+      .ui-item * {
+        margin-top: 0px;
+        margin-bottom: 5px;
+      }
+
+      input[type=button] {
+        border-width: 0;
+        background-color: #555555;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      input[type=button]:hover {
+        background-color: #777777;
+      }
+
+      .ui-item textarea {
+        min-width: 100%;
+        max-width: 100%;
+        min-height: 20px;
       }
     </style>
   </head>
   <body>
+    <div class="main-wrapper">
+      <div class="ui-wrapper">
+        <div class="ui-item ui-item-element">
+          <p class="ui-item-title">Індекс вихідного X:</p>
+          <input class="ui-output-x-index" type="number" placeholder="0" value="1" min="0">
+          <p class="ui-item-title">Доданок для індексів вхідних x:</p>
+          <input class="ui-input-x-index" type="number" placeholder="0" value="10" min="0">
+          <input class="delete-button" type="button" value="Видалити">
+        </div>
+
+        <div class="ui-item" id="newElementUIItem">
+          <p class="ui-item-title">Новий елемент:</p>
+          <textarea id="newElementTextArea" placeholder="Введіть дані..."></textarea>
+          <input id="newElementButton" type="button" value="Додати">
+          <input id="snapshotButton" type="button" value="Зберегти знімок">
+        </div>
+      </div>
+
+      <div id="canvasContainer"></div>
+    </div>
   </body>
 </html>

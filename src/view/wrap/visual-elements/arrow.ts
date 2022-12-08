@@ -1,4 +1,4 @@
-import { ViewConfig } from "../../config/view-config";
+import { ViewConfig } from "../../../config/view-config";
 
 export class Arrow extends Phaser.GameObjects.Container {
   protected graphics: Graphics;

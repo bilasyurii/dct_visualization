@@ -12,6 +12,7 @@ import { SummationSet } from "./structures/summation-set";
 import { Wrap } from "./structures/wrap";
 
 export class Lexer {
+  private shortened: boolean;
   private tokens: IToken[];
   private index: number;
   private length: number;
@@ -20,13 +21,18 @@ export class Lexer {
   private summationSet: SummationSet;
   private wrap: Wrap;
 
-  constructor() {}
+  constructor(shortened: boolean = true) {
+    this.shortened = shortened;
+  }
 
   public parse(tokens: IToken[]): Wrap {
     this.tokens = tokens;
     this.index = 0;
     this.length = tokens.length;
-    this.scaledPointSet = new ScaledPointSet();
+
+    if (!this.shortened) {
+      this.scaledPointSet = new ScaledPointSet();
+    }
     this.sumSet = new SumSet();
     this.summationSet = new SummationSet();
     this.wrap = new Wrap(this.scaledPointSet, this.sumSet, this.summationSet);
@@ -37,8 +43,11 @@ export class Lexer {
   }
 
   private startParsing(): void {
-    this.readScaledPointSet();
-    this.readArrow();
+    if (!this.shortened) {
+      this.readScaledPointSet();
+      this.readArrow();
+    }
+
     this.readSumSet();
     this.readXSeparator();
     this.readSummationSet();

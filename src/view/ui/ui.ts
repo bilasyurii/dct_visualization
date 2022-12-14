@@ -1,4 +1,5 @@
 import { Math2 } from "../../core/utils/math/math2";
+import { FileManager } from "../../utils/file-manager";
 import { IWrapData } from "../wrap/wrap-data.interface";
 import { IElementData } from "./element-data.interface";
 import { INewElementConfig } from "./new-element-config.interface";
@@ -6,16 +7,21 @@ import { UIEvent } from "./ui-event.enum";
 
 export class UI {
   public readonly events: EventEmitter = new Phaser.Events.EventEmitter();
+  private static readonly xInputValueDefaultOffset = 10;
+  private static readonly xOutputDefaultValue = 1;
 
   private newElementButton: HTMLInputElement;
+  private readFromFileButton: HTMLInputElement;
   private snapshotButton: HTMLInputElement;
   private newElementTextArea: HTMLTextAreaElement;
   private newElementTemplate: HTMLElement;
   private newElementUIItem: HTMLElement;
 
   private elementsData: IElementData[] = [];
+  private fileManager: FileManager;
 
   constructor() {
+    this.initFileManager();
     this.findHTMLElements();
     this.removeNewElementTemplate();
     this.listenUIElements();
@@ -34,8 +40,13 @@ export class UI {
     this.elementsData.push(elementData)
   }
 
+  private initFileManager(): void {
+    this.fileManager = new FileManager();
+  }
+
   private findHTMLElements(): void {
     this.newElementButton = document.getElementById("newElementButton") as HTMLInputElement;
+    this.readFromFileButton = document.getElementById("readFromFileButton") as HTMLInputElement;
     this.snapshotButton = document.getElementById("snapshotButton") as HTMLInputElement;
     this.newElementTextArea = document.getElementById("newElementTextArea") as HTMLTextAreaElement;
     this.newElementTemplate = document.getElementsByClassName("ui-item-element")[0] as HTMLElement;
@@ -48,16 +59,32 @@ export class UI {
 
   private listenUIElements(): void {
     this.newElementButton.addEventListener("click", () => this.onNewElementButtonClick());
+    this.readFromFileButton.addEventListener("click", () => this.onReadFromFileButtonClick());
     this.snapshotButton.addEventListener("click", () => this.onSnapshotButtonClick());
   }
 
   private onNewElementButtonClick(): void {
     const config: INewElementConfig = {
       data: this.newElementTextArea.value,
-      xInputValueOffset: 10,
-      xOutputValue: 1,
+      xInputValueOffset: UI.xInputValueDefaultOffset,
+      xOutputValue: UI.xOutputDefaultValue,
     };
     this.events.emit(UIEvent.AddNewElement, config);
+  }
+
+  private onReadFromFileButtonClick(): void {
+    this.fileManager.import((data) => {
+      const dataLines = data.split("\n");
+
+      dataLines.forEach((dataLine) => {
+        const config: INewElementConfig = {
+          data: dataLine,
+          xInputValueOffset: UI.xInputValueDefaultOffset,
+          xOutputValue: UI.xOutputDefaultValue,
+        };
+        this.events.emit(UIEvent.AddNewElement, config);
+      });
+    });
   }
 
   private onSnapshotButtonClick(): void {

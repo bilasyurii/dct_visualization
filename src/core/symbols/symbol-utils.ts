@@ -28,6 +28,7 @@ export class SymbolUtils {
     switch (symbol) {
       case " ":
       case "\t":
+      case "\r":
       case "\n":
         return SymbolType.Tabulation;
 

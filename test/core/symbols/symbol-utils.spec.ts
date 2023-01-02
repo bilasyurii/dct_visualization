@@ -30,9 +30,9 @@ describe("SymbolUtils", function () {
     expect(SymbolUtils.getSymbolType("+")).to.be.equal(SymbolType.Special);
     expect(SymbolUtils.getSymbolType("-")).to.be.equal(SymbolType.Special);
     expect(SymbolUtils.getSymbolType(">")).to.be.equal(SymbolType.Special);
+    expect(SymbolUtils.getSymbolType(".")).to.be.equal(SymbolType.Special);
 
     expect(SymbolUtils.getSymbolType("\b")).to.be.equal(SymbolType.Unknown);
-    expect(SymbolUtils.getSymbolType(".")).to.be.equal(SymbolType.Unknown);
     expect(SymbolUtils.getSymbolType("й")).to.be.equal(SymbolType.Unknown);
     expect(SymbolUtils.getSymbolType("=")).to.be.equal(SymbolType.Unknown);
     expect(SymbolUtils.getSymbolType("#")).to.be.equal(SymbolType.Unknown);

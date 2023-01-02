@@ -65,6 +65,7 @@ export class Tokenizer {
     switch (symbol) {
       case "\n":
         this.handleNewLine();
+        this.addToken(TokenType.NewLine, "\n");
         break;
     }
   }

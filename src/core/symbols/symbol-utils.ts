@@ -40,6 +40,7 @@ export class SymbolUtils {
       case "+":
       case "-":
       case ">":
+      case ".":
         return SymbolType.Special;
 
       default:

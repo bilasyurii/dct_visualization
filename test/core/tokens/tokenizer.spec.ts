@@ -99,7 +99,17 @@ describe("Tokenizer", function () {
 
     // act & assert
     expect(() => {
-      tokenizer.tokenize(input)
+      tokenizer.tokenize(input);
+    }).not.to.throw();
+  });
+
+  it("should parse new advanced version of data format", function () {
+    // arrange
+    const input = "2.    a) ( +1) (X) { +(x(0)) }\n    b) ( +3  -9)\nb) (+1)\n";
+
+    // act & assert
+    expect(() => {
+      tokenizer.tokenize(input);
     }).not.to.throw();
   });
 });

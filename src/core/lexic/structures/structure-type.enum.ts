@@ -1,4 +1,6 @@
 export enum StructureType {
+  NumericListIndex = "NumericListIndex", // 1.
+  AlphabeticListIndex = "AlphabeticListIndex", // a)
   SignedNumber = "SignedNumber", // +1
   Point = "Point", // {25, 4}
   ScaledPoint = "ScaledPoint", // +1 {25, 4}

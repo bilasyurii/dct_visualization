@@ -3,4 +3,5 @@ export enum TokenType {
   Text = "Text",
   Punctuation = "Punctuation",
   Sign = "Sign",
+  NewLine = "NewLine",
 }

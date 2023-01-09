@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { IToken } from "../../../src/core/tokens/token.interface";
 import { TokenType } from "../../../src/core/tokens/token-type.enum";
-import { Lexer } from "../../../src/core/lexic/lexer";
 import { Wrap } from "../../../src/core/lexic/structures/wrap";
+import { WrapLexer } from "../../../src/core/lexic/wrap-lexer";
 
-describe("Lexer", function () {
+describe("WrapLexer", function () {
   it("should correctly form an extended version of a wrap", function () {
     // arrange
-    const lexer = new Lexer(false);
+    const wrapLexer = new WrapLexer(false);
 
     const input: IToken[] = [
       {
@@ -131,7 +131,7 @@ describe("Lexer", function () {
     let wrap: Wrap;
 
     // act
-    wrap = lexer.parse(input);
+    wrap = wrapLexer.parse(input);
 
     // assert
     expect(wrap).to.exist;
@@ -206,7 +206,7 @@ describe("Lexer", function () {
 
   it("should correctly form a shortened version of a wrap", function () {
     // arrange
-    const lexer = new Lexer(true);
+    const wrapLexer = new WrapLexer(true);
 
     const input: IToken[] = [
       {
@@ -298,7 +298,7 @@ describe("Lexer", function () {
     let wrap: Wrap;
 
     // act
-    wrap = lexer.parse(input);
+    wrap = wrapLexer.parse(input);
 
     // assert
     expect(wrap).to.exist;

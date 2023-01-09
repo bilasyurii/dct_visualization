@@ -1,6 +1,5 @@
 import { Config } from "../config/config";
-import { Lexer } from "../core/lexic/lexer";
-import { Wrap } from "../core/lexic/structures/wrap";
+import { MainLexer } from "../core/lexic/main-lexer";
 import { Tokenizer } from "../core/tokens/tokenizer";
 import { INewElementConfig } from "../view/ui/new-element-config.interface";
 import { UI } from "../view/ui/ui";
@@ -9,6 +8,9 @@ import { IWrapData } from "../view/wrap/wrap-data.interface";
 import { WrapView } from "../view/wrap/wrap-view";
 import { IWrapViewConfig } from "../view/wrap/wrap-view-config.interface";
 import { saveAs } from "file-saver";
+import { WrapLexer } from "../core/lexic/wrap-lexer";
+import { HierarchyLexer } from "../core/lexic/hierarchy-lexer";
+import { SuperWrap } from "../core/lexic/structures/super-wrap";
 
 export class MainScene extends Phaser.Scene {
   private ui: UI;
@@ -40,26 +42,31 @@ export class MainScene extends Phaser.Scene {
 
   private onAddNewElement(config: INewElementConfig): void {
     const tokens = new Tokenizer().tokenize(config.data);
-    const wrap = new Lexer().parse(tokens);
+    const tree = new MainLexer(new WrapLexer(true), new HierarchyLexer()).parse(tokens);
     const viewConfig: IWrapViewConfig = {
       xInputValueOffset: config.xInputValueOffset,
       xOutputValue: config.xOutputValue,
     };
-    const view = this.createWrapView(wrap, viewConfig);
+    const superWraps = tree.getSuperWraps();
+    superWraps.forEach((superWrap) => this.createSingleElement(superWrap, viewConfig));
+    this.updateCanvasSize();
+    this.updateWrapViewPositions();
+  }
+
+  private createSingleElement(superWrap: SuperWrap, viewConfig: IWrapViewConfig): void {
+    const view = this.createWrapView(superWrap, viewConfig);
     const wrapData: IWrapData = {
       id: this.nextId++,
-      wrap,
+      superWrap,
       view,
       viewConfig,
     };
     this.wrapsData.push(wrapData);
     this.ui.onWrapAdded(wrapData);
-    this.updateCanvasSize();
-    this.updateWrapViewPositions();
   }
 
-  private createWrapView(wrap: Wrap, viewConfig: IWrapViewConfig): WrapView {
-    const view = new WrapView(this, wrap, viewConfig);
+  private createWrapView(superWrap: SuperWrap, viewConfig: IWrapViewConfig): WrapView {
+    const view = new WrapView(this, superWrap, viewConfig);
     this.add.existing(view);
     return view;
   }
@@ -79,7 +86,7 @@ export class MainScene extends Phaser.Scene {
     const index = wrapsData.findIndex((wrapData) => wrapData.id === id);
     const wrapData = wrapsData[index];
     wrapData.view.destroy();
-    wrapData.view = this.createWrapView(wrapData.wrap, wrapData.viewConfig);
+    wrapData.view = this.createWrapView(wrapData.superWrap, wrapData.viewConfig);
     this.updateWrapViewPositions();
   }
 

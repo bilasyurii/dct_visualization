@@ -1,5 +1,6 @@
 import { TokenType } from "../tokens/token-type.enum";
 import { IToken } from "../tokens/token.interface";
+import { BaseLexer } from "./base-lexer.abstract";
 import { Point } from "./structures/point";
 import { ScaledPoint } from "./structures/scaled-point";
 import { ScaledPointSet } from "./structures/scaled-point-set";
@@ -11,38 +12,27 @@ import { SummationOperandSet } from "./structures/summation-operand-set";
 import { SummationSet } from "./structures/summation-set";
 import { Wrap } from "./structures/wrap";
 
-export class Lexer {
+export class WrapLexer extends BaseLexer<Wrap> {
   private shortened: boolean;
-  private tokens: IToken[];
-  private index: number;
-  private length: number;
   private scaledPointSet: ScaledPointSet;
   private sumSet: SumSet;
   private summationSet: SummationSet;
-  private wrap: Wrap;
 
   constructor(shortened: boolean = true) {
+    super();
+
     this.shortened = shortened;
   }
 
-  public parse(tokens: IToken[]): Wrap {
-    this.tokens = tokens;
-    this.index = 0;
-    this.length = tokens.length;
-
+  protected startParsing(): void {
     if (!this.shortened) {
       this.scaledPointSet = new ScaledPointSet();
     }
+
     this.sumSet = new SumSet();
     this.summationSet = new SummationSet();
-    this.wrap = new Wrap(this.scaledPointSet, this.sumSet, this.summationSet);
+    this.result = new Wrap(this.scaledPointSet, this.sumSet, this.summationSet);
 
-    this.startParsing();
-
-    return this.wrap;
-  }
-
-  private startParsing(): void {
     if (!this.shortened) {
       this.readScaledPointSet();
       this.readArrow();
@@ -51,9 +41,10 @@ export class Lexer {
     this.readSumSet();
     this.readXSeparator();
     this.readSummationSet();
+    this.skipNewLinesIfFound();
 
     if (!this.isAtEnd()) {
-      this.throwExpectedError(this.getCurrentToken(), "end of data");
+      BaseLexer.throwExpectedError(this.getCurrentToken(), "end of data");
     }
   }
 
@@ -74,11 +65,11 @@ export class Lexer {
   }
 
   private readArrow(): void {
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "->");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "->");
   }
 
   private readSumSet(): void {
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "(");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "(");
 
     while (true) {
       if (this.isAtEnd()) {
@@ -94,17 +85,17 @@ export class Lexer {
       }
     }
 
-    this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, ")");
   }
 
   private readXSeparator(): void {
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "(");
-    this.expectToken(this.peekToken(), TokenType.Text, "X");
-    this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "(");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Text, "X");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, ")");
   }
 
   private readSummationSet(): void {
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "{");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "{");
 
     while (true) {
       if (this.isAtEnd()) {
@@ -120,7 +111,23 @@ export class Lexer {
       }
     }
 
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "}");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "}");
+  }
+
+  private skipNewLinesIfFound() {
+    while (true) {
+      if (this.isAtEnd()) {
+        break;
+      }
+
+      const token = this.getCurrentToken();
+
+      if (BaseLexer.checkToken(token, TokenType.NewLine, "\n")) {
+        this.advance();
+      } else {
+        break;
+      }
+    }
   }
 
   // returns true when there are more points to read
@@ -141,7 +148,7 @@ export class Lexer {
     switch (signToken.type) {
       case TokenType.Number:
         if (forceSign) {
-          this.throwExpectedError(signToken, "a sign");
+          BaseLexer.throwExpectedError(signToken, "a sign");
         }
 
         absoluteValueToken = signToken;
@@ -159,23 +166,23 @@ export class Lexer {
             break;
 
           default:
-            this.throwExpectedError(signToken, "a number");
+            BaseLexer.throwExpectedError(signToken, "a number");
         }
         break;
 
       default:
-        this.throwExpectedError(signToken, forceSign ? "a sign" : "a sign or a number");
+        BaseLexer.throwExpectedError(signToken, forceSign ? "a sign" : "a sign or a number");
     }
 
     return new SignedNumber(this.getSignType(signToken), parseInt(absoluteValueToken.value));
   }
 
   private readPoint(): Point {
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "{");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "{");
     const x = this.getNumber();
-    this.expectToken(this.peekToken(), TokenType.Punctuation, ",");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, ",");
     const y = this.getNumber();
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "}");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "}");
     return new Point(x, y);
   }
 
@@ -196,7 +203,7 @@ export class Lexer {
       return null;
     }
 
-    this.expectTokenType(signToken, TokenType.Sign);
+    BaseLexer.expectTokenType(signToken, TokenType.Sign);
     this.advance();
 
     const summationOperandSet = new SummationOperandSet(this.getSignType(signToken));
@@ -224,7 +231,7 @@ export class Lexer {
     }
 
     if (scopeToken) {
-      this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+      BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, ")");
     }
 
     return summationOperandSet;
@@ -238,11 +245,11 @@ export class Lexer {
     }
 
     this.advance();
-    this.expectToken(this.peekToken(), TokenType.Punctuation, "(");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, "(");
 
     const number = this.getNumber();
 
-    this.expectToken(this.peekToken(), TokenType.Punctuation, ")");
+    BaseLexer.expectToken(this.peekToken(), TokenType.Punctuation, ")");
 
     const commaToken = this.getCurrentToken();
 
@@ -251,22 +258,6 @@ export class Lexer {
     }
 
     return new SummationOperand(number)
-  }
-
-  private expectToken(token: IToken, expectedType: TokenType, expectedValue: string): void {
-    if (token.type !== expectedType || token.value !== expectedValue) {
-      this.throwExpectedError(token, `${expectedValue} (${expectedType})`);
-    }
-  }
-
-  private expectTokenType(token: IToken, expectedType: TokenType): void {
-    if (token.type !== expectedType) {
-      this.throwExpectedError(token, expectedType);
-    }
-  }
-
-  private throwExpectedError(token: IToken, expected: string): void {
-    throw new Error(`Expected ${expected}, but found ${token.value} (${token.type})`);
   }
 
   private isArrow(): boolean {
@@ -292,31 +283,7 @@ export class Lexer {
 
   private getNumber(): number {
     const token = this.peekToken();
-    this.expectTokenType(token, TokenType.Number);
+    BaseLexer.expectTokenType(token, TokenType.Number);
     return parseInt(token.value);
-  }
-
-  private peekToken(): IToken {
-    const token = this.getCurrentToken();
-    this.advance();
-    return token;
-  }
-
-  private getCurrentToken(): IToken {
-    const token = this.tokens[this.index];
-
-    if (!token) {
-      throw new Error("Unexpected end of data.");
-    }
-
-    return token;
-  }
-
-  private isAtEnd(): boolean {
-    return this.index >= this.length;
-  }
-
-  private advance(): void {
-    ++this.index;
   }
 }

@@ -1,6 +1,6 @@
 export enum StructureType {
-  NumericListIndex = "NumericListIndex", // 1.
-  AlphabeticListIndex = "AlphabeticListIndex", // a)
+  NumericListItem = "NumericListItem", // 1.
+  AlphabeticListItem = "AlphabeticListItem", // a)
   SignedNumber = "SignedNumber", // +1
   Point = "Point", // {25, 4}
   ScaledPoint = "ScaledPoint", // +1 {25, 4}
@@ -10,4 +10,5 @@ export enum StructureType {
   SummationOperandSet = "SummationOperandSet", // +(x(14), x(3)) or +x(14)
   SummationSet = "SummationSet", // {+(x(14), x(3)) -(x(2), x(7))}
   Wrap = "Wrap", // everything together
+  SuperWrap = "SuperWrap", // a set of wraps
 }

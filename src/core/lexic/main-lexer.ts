@@ -26,6 +26,7 @@ export class MainLexer implements ILexer<LexicalTree> {
 
   private parseNumericListItem(numericListItem: Hierarchy[0], lexicalTree: LexicalTree): void {
     const superWrap = new SuperWrap();
+    superWrap.setKey(numericListItem.getKey().toString());
     lexicalTree.addSuperWrap(superWrap);
 
     const alphabeticList = numericListItem.getValue();
@@ -35,6 +36,7 @@ export class MainLexer implements ILexer<LexicalTree> {
   private parseAlphabeticListItem(alphabeticListItem: AlphabeticListItem<HierarchyItem>, superWrap: SuperWrap): void {
     const wrapTokens = alphabeticListItem.getValue();
     const wrap = this.wrapLexer.parse(wrapTokens);
+    wrap.setKey(alphabeticListItem.getKey());
     superWrap.addWrap(wrap);
   }
 }

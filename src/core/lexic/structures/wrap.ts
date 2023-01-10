@@ -5,16 +5,26 @@ import { SumSet } from "./sum-set";
 import { SummationSet } from "./summation-set";
 
 export class Wrap extends BaseLexicalStructure {
+  private key: string;
   private scaledPointSet: ScaledPointSet;
   private sumSet: SumSet;
   private summationSet: SummationSet;
 
-  constructor(scaledPointSet: ScaledPointSet, sumSet: SumSet, summationSet: SummationSet) {
+  constructor(key: string, scaledPointSet: ScaledPointSet, sumSet: SumSet, summationSet: SummationSet) {
     super(StructureType.Wrap);
 
+    this.key = key;
     this.scaledPointSet = scaledPointSet;
     this.sumSet = sumSet;
     this.summationSet = summationSet;
+  }
+
+  public setKey(key: string): void {
+    this.key = key;
+  }
+
+  public getKey(): string {
+    return this.key;
   }
 
   public getScaledPointSet(): ScaledPointSet {

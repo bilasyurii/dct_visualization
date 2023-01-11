@@ -4,17 +4,18 @@ import { Tokenizer } from "../core/tokens/tokenizer";
 import { INewElementConfig } from "../view/ui/new-element-config.interface";
 import { UI } from "../view/ui/ui";
 import { UIEvent } from "../view/ui/ui-event.enum";
-import { IWrapData } from "../view/wrap/wrap-data.interface";
-import { WrapView } from "../view/wrap/wrap-view";
-import { IWrapViewConfig } from "../view/wrap/wrap-view-config.interface";
 import { saveAs } from "file-saver";
 import { WrapLexer } from "../core/lexic/wrap-lexer";
 import { HierarchyLexer } from "../core/lexic/hierarchy-lexer";
 import { SuperWrap } from "../core/lexic/structures/super-wrap";
+import { ISuperWrapData } from "../view/wrap/super-wrap-data.interface";
+import { ISuperWrapViewConfig } from "../view/wrap/super-wrap-view-config.interface";
+import { SuperWrapView } from "../view/wrap/super-wrap-view";
 
 export class MainScene extends Phaser.Scene {
+  private lexer: MainLexer;
   private ui: UI;
-  private wrapsData: IWrapData[] = [];
+  private superWrapsData: ISuperWrapData[] = [];
   private nextId: number = 0;
 
   constructor() {
@@ -24,8 +25,13 @@ export class MainScene extends Phaser.Scene {
   }
 
   public create(): void {
+    this.initLexer();
     this.initUI();
     this.listenUI();
+  }
+
+  private initLexer(): void {
+    this.lexer = new MainLexer(new WrapLexer(true), new HierarchyLexer());
   }
 
   private initUI(): void {
@@ -42,52 +48,51 @@ export class MainScene extends Phaser.Scene {
 
   private onAddNewElement(config: INewElementConfig): void {
     const tokens = new Tokenizer().tokenize(config.data);
-    const tree = new MainLexer(new WrapLexer(true), new HierarchyLexer()).parse(tokens);
-    const viewConfig: IWrapViewConfig = {
-      xInputValueOffset: config.xInputValueOffset,
-      xOutputValue: config.xOutputValue,
+    const tree = this.lexer.parse(tokens);
+    const viewConfig: ISuperWrapViewConfig = {
+      numericIndex: config.numericIndex,
     };
     const superWraps = tree.getSuperWraps();
     superWraps.forEach((superWrap) => this.createSingleElement(superWrap, viewConfig));
     this.updateCanvasSize();
-    this.updateWrapViewPositions();
+    this.updateSuperWrapViewPositions();
   }
 
-  private createSingleElement(superWrap: SuperWrap, viewConfig: IWrapViewConfig): void {
-    const view = this.createWrapView(superWrap, viewConfig);
-    const wrapData: IWrapData = {
+  private createSingleElement(superWrap: SuperWrap, viewConfig: ISuperWrapViewConfig): void {
+    const view = this.createSuperWrapView(superWrap, viewConfig);
+    const wrapData: ISuperWrapData = {
       id: this.nextId++,
       superWrap,
       view,
       viewConfig,
     };
-    this.wrapsData.push(wrapData);
+    this.superWrapsData.push(wrapData);
     this.ui.onWrapAdded(wrapData);
   }
 
-  private createWrapView(superWrap: SuperWrap, viewConfig: IWrapViewConfig): WrapView {
-    const view = new WrapView(this, superWrap, viewConfig);
+  private createSuperWrapView(superWrap: SuperWrap, viewConfig: ISuperWrapViewConfig): SuperWrapView {
+    const view = new SuperWrapView(this, superWrap, viewConfig);
     this.add.existing(view);
     return view;
   }
 
   private onDeleteElement(id: number): void {
-    const wrapsData = this.wrapsData;
-    const index = wrapsData.findIndex((wrapData) => wrapData.id === id);
-    const wrapData = wrapsData[index];
-    wrapData.view.destroy();
-    wrapsData.splice(index, 1);
+    const superWrapsData = this.superWrapsData;
+    const index = superWrapsData.findIndex((wrapData) => wrapData.id === id);
+    const superWrapData = superWrapsData[index];
+    superWrapData.view.destroy();
+    superWrapsData.splice(index, 1);
     this.updateCanvasSize();
-    this.updateWrapViewPositions();
+    this.updateSuperWrapViewPositions();
   }
 
   private onUpdateElement(id: number): void {
-    const wrapsData = this.wrapsData;
-    const index = wrapsData.findIndex((wrapData) => wrapData.id === id);
-    const wrapData = wrapsData[index];
-    wrapData.view.destroy();
-    wrapData.view = this.createWrapView(wrapData.superWrap, wrapData.viewConfig);
-    this.updateWrapViewPositions();
+    const superWrapsData = this.superWrapsData;
+    const index = superWrapsData.findIndex((wrapData) => wrapData.id === id);
+    const superWrapData = superWrapsData[index];
+    superWrapData.view.destroy();
+    superWrapData.view = this.createSuperWrapView(superWrapData.superWrap, superWrapData.viewConfig);
+    this.updateSuperWrapViewPositions();
   }
 
   private onMakeSnapshot(): void {
@@ -106,12 +111,12 @@ export class MainScene extends Phaser.Scene {
   }
 
   private updateCanvasSize(): void {
-    this.scale.setGameSize(Config.width, Config.wrapHeight * this.wrapsData.length);
+    this.scale.setGameSize(Config.width, Config.wrapHeight * this.superWrapsData.length);
   }
 
-  private updateWrapViewPositions(): void {
-    this.wrapsData.forEach((wrapData, i) => {
-      wrapData.view.y = i * Config.wrapHeight;
+  private updateSuperWrapViewPositions(): void {
+    this.superWrapsData.forEach((superWrapData, i) => {
+      superWrapData.view.y = i * Config.wrapHeight;
     });
   }
 }

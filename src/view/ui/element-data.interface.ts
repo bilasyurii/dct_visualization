@@ -1,9 +1,8 @@
-import { IWrapData } from "../wrap/wrap-data.interface";
+import { ISuperWrapData } from "../wrap/super-wrap-data.interface";
 
 export interface IElementData {
-  wrapData: IWrapData;
+  superWrapData: ISuperWrapData;
   element: HTMLElement;
   deleteButton: HTMLElement;
-  outputXIndex: HTMLInputElement;
-  inputXIndex: HTMLInputElement;
+  numericIndex: HTMLInputElement;
 }

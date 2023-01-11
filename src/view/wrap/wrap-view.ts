@@ -1,6 +1,6 @@
 import { ViewConfig } from "../../config/view-config";
 import { SignType } from "../../core/lexic/structures/sign-type.enum";
-import { SuperWrap } from "../../core/lexic/structures/super-wrap";
+import { Wrap } from "../../core/lexic/structures/wrap";
 import { Math2 } from "../../core/utils/math/math2";
 import { Arrow } from "./visual-elements/arrow";
 import { CrossedArrow } from "./visual-elements/crossed-arrow";
@@ -9,16 +9,16 @@ import { RectangleWithTextView } from "./visual-elements/rectangle-with-text-vie
 import { IWrapViewConfig } from "./wrap-view-config.interface";
 
 export class WrapView extends Phaser.GameObjects.Container {
-  private superWrap: SuperWrap;
+  private wrap: Wrap;
   private config: IWrapViewConfig;
   private nCount: number;
   private xCount: number;
   private pointsCount: number;
 
-  constructor(scene: Scene, superWrap: SuperWrap, config: IWrapViewConfig) {
+  constructor(scene: Scene, wrap: Wrap, config: IWrapViewConfig) {
     super(scene);
 
-    this.superWrap = superWrap;
+    this.wrap = wrap;
     this.config = config;
 
     this.calculateParameters();
@@ -27,8 +27,7 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private calculateParameters(): void {
-    const superWrap = this.superWrap;
-    const wrap = superWrap.getWraps()[0];
+    const wrap = this.wrap;
     const summationSet = wrap.getSummationSet();
     const summationOperandSets = summationSet.getSummationOperandSets();
 
@@ -157,8 +156,7 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private formatSum(): string {
-    const superWrap = this.superWrap;
-    const wrap = superWrap.getWraps()[0];
+    const wrap = this.wrap;
     const signedNumbers = wrap.getSumSet().getSignedNumbers();
     const count = signedNumbers.length;
     const maxCount = ViewConfig.sumSet.maxCount;

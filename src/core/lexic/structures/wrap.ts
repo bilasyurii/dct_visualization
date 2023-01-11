@@ -10,10 +10,9 @@ export class Wrap extends BaseLexicalStructure {
   private sumSet: SumSet;
   private summationSet: SummationSet;
 
-  constructor(key: string, scaledPointSet: ScaledPointSet, sumSet: SumSet, summationSet: SummationSet) {
+  constructor(scaledPointSet: ScaledPointSet, sumSet: SumSet, summationSet: SummationSet) {
     super(StructureType.Wrap);
 
-    this.key = key;
     this.scaledPointSet = scaledPointSet;
     this.sumSet = sumSet;
     this.summationSet = summationSet;

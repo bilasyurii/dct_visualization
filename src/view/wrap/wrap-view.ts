@@ -14,6 +14,7 @@ export class WrapView extends Phaser.GameObjects.Container {
   private nCount: number;
   private xCount: number;
   private pointsCount: number;
+  private uRectangle: RectangleWithTextView;
 
   constructor(scene: Scene, wrap: Wrap, config: IWrapViewConfig) {
     super(scene);
@@ -24,6 +25,11 @@ export class WrapView extends Phaser.GameObjects.Container {
     this.calculateParameters();
     this.initRectangles();
     this.initArrows();
+  }
+
+  public getHeight(): number {
+    const uRectangle = this.uRectangle;
+    return uRectangle.y + uRectangle.getRectangle().getHeight();
   }
 
   private calculateParameters(): void {
@@ -68,6 +74,7 @@ export class WrapView extends Phaser.GameObjects.Container {
       width,
       height
     );
+    this.uRectangle = uRectangle;
     this.add(uRectangle);
     uRectangle.setPosition(200, 80);
   }
@@ -87,8 +94,8 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private initSumArrow(): void {
-    this.initArrow(100, 60, 300, 60);
-    this.add(new IndexedTextView(this.scene, this.formatSum(), "").setAnchorX(0.5).setPosition(100, 30));
+    this.initArrow(260, 60, 300, 60);
+    this.add(new IndexedTextView(this.scene, this.formatSum(), "").setAnchorX(1).setPosition(280, 30));
   }
 
   private initUInputArrows(): void {
@@ -131,7 +138,7 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private initPOutputArrow(): void {
     this.initArrow(370, 75, 430, 75, true);
-    this.add(new IndexedTextView(this.scene, "X", this.config.xOutputValue + "").setAnchorX(0.5).setPosition(430, 40));
+    // this.add(new IndexedTextView(this.scene, "X", this.config.xOutputValue + "").setAnchorX(0.5).setPosition(430, 40));
     this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setPosition(380, 40));
   }
 

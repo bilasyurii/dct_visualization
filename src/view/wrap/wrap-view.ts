@@ -105,7 +105,8 @@ export class WrapView extends Phaser.GameObjects.Container {
     this.outputArrow = this.initArrow(130, y, 430, y);
     this.add(
       new IndexedTextView(this.scene, this.formatXText(index), this.formatXIndex(index))
-        .setPosition(120, y - 23)
+        .setAnchorX(1)
+        .setPosition(130, y - 23)
     );
   }
 
@@ -189,7 +190,8 @@ export class WrapView extends Phaser.GameObjects.Container {
     this.initArrow(130, y, 200, y);
     this.add(
       new IndexedTextView(this.scene, this.formatXText(index), this.formatXIndex(index))
-        .setPosition(120, y - 20)
+        .setAnchorX(1)
+        .setPosition(130, y - 20)
     );
   }
 

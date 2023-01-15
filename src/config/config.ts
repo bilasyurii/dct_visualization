@@ -1,5 +1,5 @@
 export const Config = {
-  width: 600,
+  width: 560,
   wrapHeight: 700,
   canvasParentId: "canvasContainer",
 };

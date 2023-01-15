@@ -68,7 +68,7 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
 
   private initUOutputArrow(): void {
     this.initArrow(480, 180, 550, 180, true);
-    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setPosition(515, 150));
+    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setAnchorX(0.5).setPosition(515, 150));
   }
 
   private initArrow(fromX: number, fromY: number, toX: number, toY: number, crossed: boolean = false): void {

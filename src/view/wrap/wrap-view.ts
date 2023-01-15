@@ -15,6 +15,7 @@ export class WrapView extends Phaser.GameObjects.Container {
   private xCount: number;
   private pointsCount: number;
   private uRectangle: RectangleWithTextView;
+  private isShortenedVersion: boolean;
 
   constructor(scene: Scene, wrap: Wrap, config: IWrapViewConfig) {
     super(scene);
@@ -37,6 +38,7 @@ export class WrapView extends Phaser.GameObjects.Container {
     this.nCount = wrap.calculateNCount();
     this.pointsCount = wrap.calculatePointsCount();
     this.xCount = this.nCount / this.pointsCount;
+    this.isShortenedVersion = this.xCount === 1;
   }
 
   private initRectangles(): void {
@@ -83,7 +85,11 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private initSumArrow(): void {
     this.initArrow(260, 60, 300, 60);
-    this.add(new IndexedTextView(this.scene, this.formatSum(), "").setAnchorX(1).setPosition(280, 30));
+    this.add(
+      new IndexedTextView(this.scene, this.formatSum(), "")
+        .setAnchorX(1)
+        .setPosition(280, 30)
+    );
   }
 
   private initUInputArrows(): void {

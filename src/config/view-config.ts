@@ -15,8 +15,8 @@ export const ViewConfig = {
   },
   primaryText: {
     fontFamily: "Times New Roman",
-    fontSize: 16,
-    indexFontSize: 8,
+    fontSize: 14,
+    indexFontSize: 7,
     color: 0x000000,
   },
   xInputs: {
@@ -24,7 +24,7 @@ export const ViewConfig = {
     interval: 20,
   },
   sumSet: {
-    maxCount: 8,
+    maxCount: 16,
   },
   fpsMeter: false,
 };

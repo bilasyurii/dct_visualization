@@ -5,6 +5,6 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
   // backgroundColor: 0xdddddd,
   transparent: true,
   width: Config.width,
-  height: Config.wrapHeight,
+  height: 100,
   parent: Config.canvasParentId,
 };

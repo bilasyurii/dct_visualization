@@ -118,12 +118,17 @@ export class MainScene extends Phaser.Scene {
   }
 
   private updateCanvasSize(): void {
-    this.scale.setGameSize(Config.width, Config.wrapHeight * this.superWrapsData.length);
+    const height = this.superWrapsData.reduce((value, superWrapData) => value + superWrapData.view.getHeight(), 0);
+    this.scale.setGameSize(Config.width, height);
   }
 
   private updateSuperWrapViewPositions(): void {
-    this.superWrapsData.forEach((superWrapData, i) => {
-      superWrapData.view.y = i * Config.wrapHeight;
+    let y = 0;
+
+    this.superWrapsData.forEach((superWrapData) => {
+      const view = superWrapData.view;
+      view.y = y;
+      y += view.getHeight();
     });
   }
 }

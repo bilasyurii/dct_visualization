@@ -91,6 +91,8 @@ export class UI {
   private configureElement(elementData: IElementData): void {
     const numericIndexKey = elementData.superWrapData.superWrap.getKey();
     elementData.numericIndex.value = numericIndexKey;
+
+    elementData.element.style.height = elementData.superWrapData.view.getHeight() + "px";
   }
 
   private listenElement(elementData: IElementData): void {

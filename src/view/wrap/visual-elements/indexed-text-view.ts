@@ -30,7 +30,7 @@ export class IndexedTextView extends Phaser.GameObjects.Container {
       fontFamily: ViewConfig.primaryText.fontFamily,
       fontSize: `${ViewConfig.primaryText.fontSize}pt`,
       color: Phaser.Display.Color.IntegerToColor(ViewConfig.primaryText.color).rgba,
-      resolution: 2,
+      resolution: ViewConfig.primaryText.resolution,
     });
     this.text = text;
     this.add(text);
@@ -47,7 +47,7 @@ export class IndexedTextView extends Phaser.GameObjects.Container {
       fontFamily: ViewConfig.primaryText.fontFamily,
       fontSize: `${ViewConfig.primaryText.indexFontSize}pt`,
       color: Phaser.Display.Color.IntegerToColor(ViewConfig.primaryText.color).rgba,
-      resolution: 2,
+      resolution: ViewConfig.primaryText.resolution,
     });
     this.add(text);
     text.setOrigin(0, 1);

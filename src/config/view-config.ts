@@ -18,6 +18,7 @@ export const ViewConfig = {
     fontSize: 13,
     indexFontSize: 8,
     color: 0x000000,
+    resolution: 2,
   },
   xInputs: {
     maxCount: 6,

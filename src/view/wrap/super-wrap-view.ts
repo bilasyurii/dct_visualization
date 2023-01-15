@@ -82,8 +82,8 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
     this.add(uRectangle);
 
     uRectangle.setPosition(430, top);
-    uRectangle.getText().y = Math2.max(50, height * 0.5);
     uRectangle.getText().setOrigin(0.5);
+    uRectangle.getText().y = Math2.min(50, height * 0.5);
   }
 
   private initUOutputArrow(): void {

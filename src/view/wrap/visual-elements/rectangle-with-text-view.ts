@@ -33,6 +33,7 @@ export class RectangleWithTextView extends Phaser.GameObjects.Container {
       fontFamily: ViewConfig.primaryText.fontFamily,
       fontSize: `${ViewConfig.primaryText.fontSize}pt`,
       color: Phaser.Display.Color.IntegerToColor(ViewConfig.primaryText.color).rgba,
+      resolution: ViewConfig.primaryText.resolution,
     });
     this.text = text;
     text.setOrigin(0.5, 0);

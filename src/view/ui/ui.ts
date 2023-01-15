@@ -31,6 +31,7 @@ export class UI {
       superWrapData,
       element,
       deleteButton: element.getElementsByClassName("delete-button")[0] as HTMLElement,
+      snapshotButton: element.getElementsByClassName("element-snapshot-button")[0] as HTMLElement,
       numericIndex: element.getElementsByClassName("ui-numeric-index")[0] as HTMLInputElement,
     };
     this.configureElement(elementData);
@@ -97,6 +98,7 @@ export class UI {
 
   private listenElement(elementData: IElementData): void {
     elementData.deleteButton.addEventListener("click", () => this.onElementDeleteClick(elementData));
+    elementData.snapshotButton.addEventListener("click", () => this.onElementSnapshotClick(elementData));
 
     const numericIndex = elementData.numericIndex;
     numericIndex.addEventListener("input", () => this.onElementNumericIndexChanged(elementData, numericIndex));
@@ -106,6 +108,10 @@ export class UI {
     this.elementsData.filter((data) => data !== elementData);
     elementData.element.remove();
     this.events.emit(UIEvent.DeleteElement, elementData.superWrapData.id);
+  }
+
+  private onElementSnapshotClick(elementData: IElementData): void {
+    this.events.emit(UIEvent.MakeElementSnapshot, elementData.superWrapData.id);
   }
 
   private onElementNumericIndexChanged(elementData: IElementData, numericIndex: HTMLInputElement): void {

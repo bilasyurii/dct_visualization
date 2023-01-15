@@ -3,4 +3,5 @@ export enum UIEvent {
   DeleteElement = "DeleteElement",
   UpdateElement = "UpdateElement",
   MakeSnapshot = "MakeSnapshot",
+  MakeElementSnapshot = "MakeElementSnapshot",
 }

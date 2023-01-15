@@ -11,6 +11,7 @@ import { SuperWrap } from "../core/lexic/structures/super-wrap";
 import { ISuperWrapData } from "../view/wrap/super-wrap-data.interface";
 import { ISuperWrapViewConfig } from "../view/wrap/super-wrap-view-config.interface";
 import { SuperWrapView } from "../view/wrap/super-wrap-view";
+import { ArrayUtils } from "../core/utils/array-utils";
 
 export class MainScene extends Phaser.Scene {
   private lexer: MainLexer;
@@ -43,6 +44,7 @@ export class MainScene extends Phaser.Scene {
     uiEvents.on(UIEvent.AddNewElements, this.onAddNewElement, this);
     uiEvents.on(UIEvent.DeleteElement, this.onDeleteElement, this);
     uiEvents.on(UIEvent.UpdateElement, this.onUpdateElement, this);
+    uiEvents.on(UIEvent.MakeElementSnapshot, this.onMakeElementSnapshot, this);
     uiEvents.on(UIEvent.MakeSnapshot, this.onMakeSnapshot, this);
   }
 
@@ -79,19 +81,15 @@ export class MainScene extends Phaser.Scene {
   }
 
   private onDeleteElement(id: number): void {
-    const superWrapsData = this.superWrapsData;
-    const index = superWrapsData.findIndex((wrapData) => wrapData.id === id);
-    const superWrapData = superWrapsData[index];
+    const superWrapData = this.superWrapDataById(id);
     superWrapData.view.destroy();
-    superWrapsData.splice(index, 1);
+    ArrayUtils.removeFirst(this.superWrapsData, superWrapData);
     this.updateCanvasSize();
     this.updateSuperWrapViewPositions();
   }
 
   private onUpdateElement(id: number): void {
-    const superWrapsData = this.superWrapsData;
-    const index = superWrapsData.findIndex((wrapData) => wrapData.id === id);
-    const superWrapData = superWrapsData[index];
+    const superWrapData = this.superWrapDataById(id);
     const superWrap = superWrapData.superWrap;
     superWrapData.view.destroy();
 
@@ -102,19 +100,33 @@ export class MainScene extends Phaser.Scene {
     this.updateSuperWrapViewPositions();
   }
 
+  private onMakeElementSnapshot(id: number): void {
+    const superWrapData = this.superWrapDataById(id);
+    const view = superWrapData.view;
+    this.renderer.snapshotArea(view.x, view.y, Config.width, view.getHeight(), this.onSnapshotReady);
+  }
+
   private onMakeSnapshot(): void {
-    this.renderer.snapshot((snapshot: HTMLImageElement) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = snapshot.width;
-      canvas.height = snapshot.height;
+    this.renderer.snapshot(this.onSnapshotReady);
+  }
 
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(snapshot, 0, 0);
+  private onSnapshotReady(snapshot: HTMLImageElement) {
+    const canvas = document.createElement("canvas");
+    canvas.width = snapshot.width;
+    canvas.height = snapshot.height;
 
-      canvas.toBlob((blob) => {
-        saveAs(blob, "dct.png");
-      });
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(snapshot, 0, 0);
+
+    canvas.toBlob((blob) => {
+      saveAs(blob, "dct.png");
     });
+  }
+
+  private superWrapDataById(id: number): ISuperWrapData {
+    const superWrapsData = this.superWrapsData;
+    const index = superWrapsData.findIndex((wrapData) => wrapData.id === id);
+    return superWrapsData[index];
   }
 
   private updateCanvasSize(): void {

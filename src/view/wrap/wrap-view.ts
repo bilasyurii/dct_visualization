@@ -15,6 +15,7 @@ export class WrapView extends Phaser.GameObjects.Container {
   private xCount: number;
   private pointsCount: number;
   private uRectangle: RectangleWithTextView;
+  private outputArrow: Arrow;
   private isShortenedVersion: boolean;
 
   constructor(scene: Scene, wrap: Wrap, config: IWrapViewConfig) {
@@ -29,8 +30,16 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   public getHeight(): number {
-    const uRectangle = this.uRectangle;
-    return uRectangle.y + uRectangle.getRectangle().getHeight();
+    if (this.isShortenedVersion) {
+      return 50;
+    } else {
+      const uRectangle = this.uRectangle;
+      return uRectangle.y + uRectangle.getRectangle().getHeight();
+    }
+  }
+
+  public getOutputArrowY(): number {
+    return this.outputArrow.y;
   }
 
   private calculateParameters(): void {
@@ -42,15 +51,21 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private initRectangles(): void {
-    this.initURectangle();
-    this.initPRectangle();
+    if (!this.isShortenedVersion) {
+      this.initURectangle();
+      this.initPRectangle();
+    }
   }
 
   private initArrows(): void {
-    this.initSumArrow();
-    this.initUInputArrows();
-    this.initUtoPArrow();
-    this.initPOutputArrow();
+    if (this.isShortenedVersion) {
+      this.initInputToOutputArrow();
+    } else {
+      this.initSumArrow();
+      this.initUInputArrows();
+      this.initUtoPArrow();
+      this.initPOutputArrow();
+    }
   }
 
   private initURectangle(): void {
@@ -81,6 +96,16 @@ export class WrapView extends Phaser.GameObjects.Container {
     );
     this.add(pRectangle);
     pRectangle.setPosition(300, 50);
+  }
+
+  private initInputToOutputArrow(): void {
+    const y = 25;
+    this.outputArrow = this.initArrow(100, y, 430, y);
+    this.add(
+      new IndexedTextView(this.scene, "x", this.formatXIndex(1))
+        .setAnchorX(1)
+        .setPosition(100, y - 23)
+    );
   }
 
   private initSumArrow(): void {
@@ -127,28 +152,45 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private initUtoPArrow(): void {
     this.initArrow(250, 90, 300, 90, true);
-    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setAnchorX(0.5).setPosition(275, 65));
+    this.add(
+      new IndexedTextView(this.scene, this.pointsCount + "", "")
+        .setAnchorX(0.5)
+        .setPosition(275, 65)
+    );
   }
 
   private initPOutputArrow(): void {
-    this.initArrow(370, 75, 430, 75, true);
-    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setAnchorX(0.5).setPosition(400, 45));
+    this.outputArrow = this.initArrow(370, 75, 430, 75, true);
+    this.add(
+      new IndexedTextView(this.scene, this.pointsCount + "", "")
+        .setAnchorX(0.5)
+        .setPosition(400, 45)
+    );
   }
 
-  private initArrow(fromX: number, fromY: number, toX: number, toY: number, crossed: boolean = false): void {
+  private initArrow(fromX: number, fromY: number, toX: number, toY: number, crossed: boolean = false): Arrow {
     const arrow = crossed ? new CrossedArrow(this.scene) : new Arrow(this.scene);
     arrow.setDimensions(toX - fromX, toY - fromY);
     arrow.setPosition(fromX, fromY);
     this.add(arrow);
+    return arrow;
   }
 
   private initEpsilon(y: number): void {
-    this.add(new IndexedTextView(this.scene, "...", "").setAnchorX(0.5).setPosition(150, y - 15));
+    this.add(
+      new IndexedTextView(this.scene, "...", "")
+        .setAnchorX(0.5)
+        .setPosition(150, y - 15)
+    );
   }
 
   private initXArrow(index: number, y: number): void {
     this.initArrow(100, y, 200, y);
-    this.add(new IndexedTextView(this.scene, "x", this.formatXIndex(index)).setAnchorX(1).setPosition(100, y - 23));
+    this.add(
+      new IndexedTextView(this.scene, "x", this.formatXIndex(index))
+        .setAnchorX(1)
+        .setPosition(100, y - 23)
+    );
   }
 
   private formatXIndex(index: number): string {

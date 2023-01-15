@@ -1,4 +1,5 @@
 import { SuperWrap } from "../../core/lexic/structures/super-wrap";
+import { Math2 } from "../../core/utils/math/math2";
 import { ISuperWrapViewConfig } from "./super-wrap-view-config.interface";
 import { Arrow } from "./visual-elements/arrow";
 import { CrossedArrow } from "./visual-elements/crossed-arrow";
@@ -9,6 +10,8 @@ import { IWrapViewConfig } from "./wrap-view-config.interface";
 
 export class SuperWrapView extends Phaser.GameObjects.Container {
   private superWrap: SuperWrap;
+  private wrapViews: WrapView[];
+  private uRectangle: RectangleWithTextView;
   private config: ISuperWrapViewConfig;
   private height_: number;
   private pointsCount: number;
@@ -34,7 +37,7 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
     const wraps = this.superWrap.getWraps();
     let y = 0;
 
-    wraps.forEach((wrap) => {
+    this.wrapViews = wraps.map((wrap) => {
       const config: IWrapViewConfig = {
         xInputValueOffset: 0,
         xOutputValue: 0,
@@ -44,6 +47,8 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
 
       view.y = y;
       y += view.getHeight();
+
+      return view;
     });
 
     this.height_ = y;
@@ -58,17 +63,35 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
   }
 
   private initURectangle(): void {
+    const wrapViews = this.wrapViews;
+    const topWrapView = wrapViews[0];
+    const bottomWrapView = wrapViews[wrapViews.length - 1];
+
     const width = 50;
-    const height = this.height_ - 90;
+    const offset = 20;
+    const top = topWrapView.getOutputArrowY() + topWrapView.y - offset;
+    const bottom = bottomWrapView.getOutputArrowY() + bottomWrapView.y + offset;
+    const height = bottom - top;
+
     const uRectangle = new RectangleWithTextView(this.scene, "U", width, height);
+    this.uRectangle = uRectangle;
     this.add(uRectangle);
-    uRectangle.setPosition(430, 60);
-    uRectangle.getText().y = 50;
+
+    uRectangle.setPosition(430, top);
+    uRectangle.getText().y = Math2.max(50, height * 0.5);
+    uRectangle.getText().setOrigin(0.5);
   }
 
   private initUOutputArrow(): void {
-    this.initArrow(480, 180, 550, 180, true);
-    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setAnchorX(0.5).setPosition(515, 150));
+    const uRectangle = this.uRectangle;
+    const y = uRectangle.y + uRectangle.getRectangle().getHeight() * 0.5;
+
+    this.initArrow(480, y, 550, y, true);
+    this.add(
+      new IndexedTextView(this.scene, this.pointsCount + "", "")
+        .setAnchorX(0.5)
+        .setPosition(515, y - 30)
+    );
   }
 
   private initArrow(fromX: number, fromY: number, toX: number, toY: number, crossed: boolean = false): void {

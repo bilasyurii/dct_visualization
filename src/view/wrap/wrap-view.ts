@@ -34,20 +34,8 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private calculateParameters(): void {
     const wrap = this.wrap;
-    const summationSet = wrap.getSummationSet();
-    const summationOperandSets = summationSet.getSummationOperandSets();
-
-    this.nCount = summationOperandSets.reduce(
-      (sum, summationOperandSet) =>
-        sum + summationOperandSet.getSummationOperands().length,
-      0
-    );
-
-    this.pointsCount = wrap
-      .getSummationSet()
-      .getSummationOperandSets()[0]
-      .getSummationOperands().length;
-
+    this.nCount = wrap.calculateNCount();
+    this.pointsCount = wrap.calculatePointsCount();
     this.xCount = this.nCount / this.pointsCount;
   }
 
@@ -133,13 +121,12 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private initUtoPArrow(): void {
     this.initArrow(250, 90, 300, 90, true);
-    this.add(new IndexedTextView(this.scene, "", this.pointsCount + "").setPosition(260, 65));
+    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setAnchorX(0.5).setPosition(275, 65));
   }
 
   private initPOutputArrow(): void {
     this.initArrow(370, 75, 430, 75, true);
-    // this.add(new IndexedTextView(this.scene, "X", this.config.xOutputValue + "").setAnchorX(0.5).setPosition(430, 40));
-    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setPosition(380, 40));
+    this.add(new IndexedTextView(this.scene, this.pointsCount + "", "").setAnchorX(0.5).setPosition(400, 45));
   }
 
   private initArrow(fromX: number, fromY: number, toX: number, toY: number, crossed: boolean = false): void {

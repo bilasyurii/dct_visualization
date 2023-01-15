@@ -37,4 +37,22 @@ export class Wrap extends BaseLexicalStructure {
   public getSummationSet(): SummationSet {
     return this.summationSet;
   }
+
+  public calculateNCount(): number {
+    const summationSet = this.getSummationSet();
+    const summationOperandSets = summationSet.getSummationOperandSets();
+
+    return summationOperandSets.reduce(
+      (sum, summationOperandSet) =>
+        sum + summationOperandSet.getSummationOperands().length,
+      0
+    );
+  }
+
+  public calculatePointsCount(): number {
+    return this
+      .getSummationSet()
+      .getSummationOperandSets()[0]
+      .getSummationOperands().length;
+  }
 }

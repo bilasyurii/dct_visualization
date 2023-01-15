@@ -24,7 +24,7 @@ export const ViewConfig = {
     interval: 20,
   },
   sumSet: {
-    maxCount: 6,
+    maxCount: 8,
   },
   fpsMeter: false,
 };

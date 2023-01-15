@@ -22,7 +22,7 @@ export const ViewConfig = {
   },
   xInputs: {
     maxCount: 6,
-    interval: 20,
+    interval: 25,
   },
   sumSet: {
     maxCount: 16,

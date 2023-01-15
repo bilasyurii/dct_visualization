@@ -1,5 +1,5 @@
 export enum UIEvent {
-  AddNewElement = "AddNewElement",
+  AddNewElements = "AddNewElements",
   DeleteElement = "DeleteElement",
   UpdateElement = "UpdateElement",
   MakeSnapshot = "MakeSnapshot",

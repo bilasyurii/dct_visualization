@@ -40,7 +40,7 @@ export class MainScene extends Phaser.Scene {
 
   private listenUI(): void {
     const uiEvents = this.ui.events;
-    uiEvents.on(UIEvent.AddNewElement, this.onAddNewElement, this);
+    uiEvents.on(UIEvent.AddNewElements, this.onAddNewElement, this);
     uiEvents.on(UIEvent.DeleteElement, this.onDeleteElement, this);
     uiEvents.on(UIEvent.UpdateElement, this.onUpdateElement, this);
     uiEvents.on(UIEvent.MakeSnapshot, this.onMakeSnapshot, this);
@@ -49,11 +49,13 @@ export class MainScene extends Phaser.Scene {
   private onAddNewElement(config: INewElementConfig): void {
     const tokens = new Tokenizer().tokenize(config.data);
     const tree = this.lexer.parse(tokens);
-    const viewConfig: ISuperWrapViewConfig = {
-      numericIndex: config.numericIndex,
-    };
     const superWraps = tree.getSuperWraps();
-    superWraps.forEach((superWrap) => this.createSingleElement(superWrap, viewConfig));
+    superWraps.forEach((superWrap) => {
+      const viewConfig: ISuperWrapViewConfig = {
+        numericIndexOverride: null,
+      };
+      this.createSingleElement(superWrap, viewConfig);
+    });
     this.updateCanvasSize();
     this.updateSuperWrapViewPositions();
   }
@@ -90,7 +92,12 @@ export class MainScene extends Phaser.Scene {
     const superWrapsData = this.superWrapsData;
     const index = superWrapsData.findIndex((wrapData) => wrapData.id === id);
     const superWrapData = superWrapsData[index];
+    const superWrap = superWrapData.superWrap;
     superWrapData.view.destroy();
+
+    const numericIndexOverride = superWrapData.viewConfig.numericIndexOverride;
+    numericIndexOverride && superWrap.setKey(numericIndexOverride + "");
+
     superWrapData.view = this.createSuperWrapView(superWrapData.superWrap, superWrapData.viewConfig);
     this.updateSuperWrapViewPositions();
   }

@@ -1,3 +1,3 @@
 export interface ISuperWrapViewConfig {
-  numericIndex: number;
+  numericIndexOverride: number | null;
 }

@@ -38,13 +38,14 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
 
   private initWraps(): void {
     const scene = this.scene;
-    const wraps = this.superWrap.getWraps();
+    const superWrap = this.superWrap;
+    const xNumericIndexKey = superWrap.getKey();
+    const wraps = superWrap.getWraps();
     let y = 0;
 
     this.wrapViews = wraps.map((wrap) => {
       const config: IWrapViewConfig = {
-        xInputValueOffset: 0,
-        xOutputValue: 0,
+        xNumericIndexKey,
       };
       const view = new WrapView(scene, wrap, config);
       this.add(view);
@@ -98,8 +99,9 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
         .setPosition(515, y - 30)
     );
 
+    const superWrap = this.superWrap;
     this.add(
-      new IndexedTextView(this.scene, "x", this.config.numericIndex + "" + this.superWrap.getWraps()[0].getKey())
+      new IndexedTextView(this.scene, "x", superWrap.getKey() + superWrap.getWraps()[0].getKey())
         .setAnchorX(0.5)
         .setPosition(550, y - 30)
     );

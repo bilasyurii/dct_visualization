@@ -2,6 +2,7 @@ import { ViewConfig } from "../../config/view-config";
 import { SignType } from "../../core/lexic/structures/sign-type.enum";
 import { Wrap } from "../../core/lexic/structures/wrap";
 import { Math2 } from "../../core/utils/math/math2";
+import { StringUtils } from "../../core/utils/string-utils";
 import { Arrow } from "./visual-elements/arrow";
 import { CrossedArrow } from "./visual-elements/crossed-arrow";
 import { IndexedTextView } from "./visual-elements/indexed-text-view";
@@ -99,12 +100,12 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private initInputToOutputArrow(): void {
+    const index = 1;
     const y = 25;
-    this.outputArrow = this.initArrow(100, y, 430, y);
+    this.outputArrow = this.initArrow(130, y, 430, y);
     this.add(
-      new IndexedTextView(this.scene, "x", this.formatXIndex(1))
-        .setAnchorX(1)
-        .setPosition(100, y - 23)
+      new IndexedTextView(this.scene, this.formatXText(index), this.formatXIndex(index))
+        .setPosition(120, y - 23)
     );
   }
 
@@ -113,7 +114,7 @@ export class WrapView extends Phaser.GameObjects.Container {
     this.add(
       new IndexedTextView(this.scene, this.formatSum(), "")
         .setAnchorX(1)
-        .setPosition(280, 30)
+        .setPosition(280, 35)
     );
   }
 
@@ -185,16 +186,19 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private initXArrow(index: number, y: number): void {
-    this.initArrow(100, y, 200, y);
+    this.initArrow(130, y, 200, y);
     this.add(
-      new IndexedTextView(this.scene, "x", this.formatXIndex(index))
-        .setAnchorX(1)
-        .setPosition(100, y - 23)
+      new IndexedTextView(this.scene, this.formatXText(index), this.formatXIndex(index))
+        .setPosition(120, y - 20)
     );
   }
 
-  private formatXIndex(index: number): string {
-    return (this.config.xInputValueOffset + index) + "";
+  private formatXText(index: number): string {
+    return "x" + StringUtils.multiply("'", index);
+  }
+
+  private formatXIndex(_index: number): string {
+    return this.config.xNumericIndexKey + this.wrap.getKey();
   }
 
   private formatSum(): string {

@@ -7,7 +7,6 @@ import { UIEvent } from "./ui-event.enum";
 
 export class UI {
   public readonly events: EventEmitter = new Phaser.Events.EventEmitter();
-  private static readonly numericIndexDefaultValue = 1;
 
   private newElementButton: HTMLInputElement;
   private readFromFileButton: HTMLInputElement;
@@ -34,6 +33,7 @@ export class UI {
       deleteButton: element.getElementsByClassName("delete-button")[0] as HTMLElement,
       numericIndex: element.getElementsByClassName("ui-numeric-index")[0] as HTMLInputElement,
     };
+    this.configureElement(elementData);
     this.listenElement(elementData);
     this.elementsData.push(elementData)
   }
@@ -64,18 +64,16 @@ export class UI {
   private onNewElementButtonClick(): void {
     const config: INewElementConfig = {
       data: this.newElementTextArea.value,
-      numericIndex: UI.numericIndexDefaultValue,
     };
-    this.events.emit(UIEvent.AddNewElement, config);
+    this.events.emit(UIEvent.AddNewElements, config);
   }
 
   private onReadFromFileButtonClick(): void {
     this.fileManager.import((data) => {
       const config: INewElementConfig = {
         data,
-        numericIndex: UI.numericIndexDefaultValue,
       };
-      this.events.emit(UIEvent.AddNewElement, config);
+      this.events.emit(UIEvent.AddNewElements, config);
     });
   }
 
@@ -88,6 +86,11 @@ export class UI {
     const newElementUIItem = this.newElementUIItem;
     newElementUIItem.parentNode.insertBefore(element, newElementUIItem);
     return element as HTMLElement;
+  }
+
+  private configureElement(elementData: IElementData): void {
+    const numericIndexKey = elementData.superWrapData.superWrap.getKey();
+    elementData.numericIndex.value = numericIndexKey;
   }
 
   private listenElement(elementData: IElementData): void {
@@ -104,7 +107,7 @@ export class UI {
   }
 
   private onElementNumericIndexChanged(elementData: IElementData, numericIndex: HTMLInputElement): void {
-    elementData.superWrapData.viewConfig.numericIndex = Math2.max(parseInt(numericIndex.value) || 0, 0);
+    elementData.superWrapData.viewConfig.numericIndexOverride = Math2.max(parseInt(numericIndex.value) || 0, 0);
     this.events.emit(UIEvent.UpdateElement, elementData.superWrapData.id);
   }
 }

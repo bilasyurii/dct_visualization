@@ -14,9 +14,9 @@ export const ViewConfig = {
     crossSize: 10,
   },
   primaryText: {
-    fontFamily: "Times New Roman",
-    fontSize: 14,
-    indexFontSize: 7,
+    fontFamily: "Arial",
+    fontSize: 13,
+    indexFontSize: 8,
     color: 0x000000,
   },
   xInputs: {

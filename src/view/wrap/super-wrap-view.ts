@@ -28,6 +28,10 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
     this.initArrows();
   }
 
+  public getHeight(): number {
+    return this.height_;
+  }
+
   private calculateParameters(): void {
     this.pointsCount = this.superWrap.getWraps()[0].calculatePointsCount();
   }
@@ -87,10 +91,17 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
     const y = uRectangle.y + uRectangle.getRectangle().getHeight() * 0.5;
 
     this.initArrow(480, y, 550, y, true);
+
     this.add(
       new IndexedTextView(this.scene, this.pointsCount + "", "")
         .setAnchorX(0.5)
         .setPosition(515, y - 30)
+    );
+
+    this.add(
+      new IndexedTextView(this.scene, "x", this.config.numericIndex + "" + this.superWrap.getWraps()[0].getKey())
+        .setAnchorX(0.5)
+        .setPosition(550, y - 30)
     );
   }
 

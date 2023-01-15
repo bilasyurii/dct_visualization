@@ -12,9 +12,11 @@ import { ISuperWrapData } from "../view/wrap/super-wrap-data.interface";
 import { ISuperWrapViewConfig } from "../view/wrap/super-wrap-view-config.interface";
 import { SuperWrapView } from "../view/wrap/super-wrap-view";
 import { ArrayUtils } from "../core/utils/array-utils";
+import { LegendGenerator } from "../view/legend/legend-generator";
 
 export class MainScene extends Phaser.Scene {
   private lexer: MainLexer;
+  private legendGenerator: LegendGenerator;
   private ui: UI;
   private superWrapsData: ISuperWrapData[] = [];
   private nextId: number = 0;
@@ -27,12 +29,17 @@ export class MainScene extends Phaser.Scene {
 
   public create(): void {
     this.initLexer();
+    this.initLegendGenerator();
     this.initUI();
     this.listenUI();
   }
 
   private initLexer(): void {
     this.lexer = new MainLexer(new WrapLexer(true), new HierarchyLexer());
+  }
+
+  private initLegendGenerator(): void {
+    this.legendGenerator = new LegendGenerator();
   }
 
   private initUI(): void {
@@ -66,6 +73,7 @@ export class MainScene extends Phaser.Scene {
     });
     this.updateCanvasSize();
     this.updateSuperWrapViewPositions();
+    this.updateLegendText();
   }
 
   private createSingleElement(superWrap: SuperWrap, viewConfig: ISuperWrapViewConfig): void {
@@ -92,6 +100,7 @@ export class MainScene extends Phaser.Scene {
     ArrayUtils.removeFirst(this.superWrapsData, superWrapData);
     this.updateCanvasSize();
     this.updateSuperWrapViewPositions();
+    this.updateLegendText();
   }
 
   private onUpdateElement(id: number): void {
@@ -104,6 +113,7 @@ export class MainScene extends Phaser.Scene {
 
     superWrapData.view = this.createSuperWrapView(superWrapData.superWrap, superWrapData.viewConfig);
     this.updateSuperWrapViewPositions();
+    this.updateLegendText();
   }
 
   private onMakeElementSnapshot(id: number): void {
@@ -148,5 +158,15 @@ export class MainScene extends Phaser.Scene {
       view.y = y;
       y += view.getHeight();
     });
+  }
+
+  private updateLegendText(): void {
+    const superWraps = this.getSuperWraps();
+    const legendText = this.legendGenerator.generate(superWraps);
+    this.ui.updateLegendText(legendText);
+  }
+
+  private getSuperWraps(): SuperWrap[] {
+    return this.superWrapsData.map((superWrapData) => superWrapData.superWrap);
   }
 }

@@ -14,6 +14,7 @@ export class UI {
   private newElementTextArea: HTMLTextAreaElement;
   private newElementTemplate: HTMLElement;
   private newElementUIItem: HTMLElement;
+  private legendText: HTMLDivElement;
 
   private elementsData: IElementData[] = [];
   private fileManager: FileManager;
@@ -39,6 +40,11 @@ export class UI {
     this.elementsData.push(elementData)
   }
 
+  public updateLegendText(text: string): void {
+    this.legendText.innerText = text;
+    console.log(text);
+  }
+
   private initFileManager(): void {
     this.fileManager = new FileManager();
   }
@@ -50,6 +56,7 @@ export class UI {
     this.newElementTextArea = document.getElementById("newElementTextArea") as HTMLTextAreaElement;
     this.newElementTemplate = document.getElementsByClassName("ui-item-element")[0] as HTMLElement;
     this.newElementUIItem = document.getElementById("newElementUIItem") as HTMLElement;
+    this.legendText = document.getElementById("legendText") as HTMLDivElement;
   }
 
   private removeNewElementTemplate(): void {

@@ -53,6 +53,12 @@ export class MainScene extends Phaser.Scene {
     const tree = this.lexer.parse(tokens);
     const superWraps = tree.getSuperWraps();
     superWraps.forEach((superWrap) => {
+      const wraps = superWrap.getWraps();
+
+      if (wraps.length === 1 && wraps[0].isShortVersion()) {
+        return;
+      }
+
       const viewConfig: ISuperWrapViewConfig = {
         numericIndexOverride: null,
       };

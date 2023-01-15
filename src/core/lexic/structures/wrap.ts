@@ -55,4 +55,9 @@ export class Wrap extends BaseLexicalStructure {
       .getSummationOperandSets()[0]
       .getSummationOperands().length;
   }
+
+  public isShortVersion(): boolean {
+    const signedNumbers = this.getSumSet().getSignedNumbers();
+    return signedNumbers.length === 1 && signedNumbers[0].getAbsoluteValue() === 0;
+  }
 }

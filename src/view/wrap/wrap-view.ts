@@ -48,7 +48,7 @@ export class WrapView extends Phaser.GameObjects.Container {
     this.nCount = wrap.calculateNCount();
     this.pointsCount = wrap.calculatePointsCount();
     this.xCount = this.nCount / this.pointsCount;
-    this.isShortenedVersion = this.xCount === 1;
+    this.isShortenedVersion = wrap.isShortVersion();
   }
 
   private initRectangles(): void {

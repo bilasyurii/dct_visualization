@@ -230,7 +230,7 @@ export class WrapView extends Phaser.GameObjects.Container {
         }
       } else {
         const signedNumber = signedNumbers[i];
-        result += `${this.getSignText(signedNumber.getSignType())}${signedNumber.getAbsoluteValue()},`;
+        result += `${signedNumber.getSignString()}${signedNumber.getAbsoluteValue()},`;
       }
     }
 

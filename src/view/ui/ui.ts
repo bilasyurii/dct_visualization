@@ -41,8 +41,7 @@ export class UI {
   }
 
   public updateLegendText(text: string): void {
-    this.legendText.innerText = text;
-    console.log(text);
+    this.legendText.innerHTML = text;
   }
 
   private initFileManager(): void {

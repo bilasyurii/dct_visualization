@@ -17,6 +17,10 @@ export class SignedNumber extends BaseLexicalStructure {
     return this.signType;
   }
 
+  public getSignString(): string {
+    return this.signType === SignType.Positive ? "+" : "-";
+  }
+
   public isPositive(): boolean {
     return this.signType === SignType.Positive;
   }

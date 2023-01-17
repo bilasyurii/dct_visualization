@@ -18,6 +18,18 @@ export class SummationOperandSet extends BaseLexicalStructure {
     return this.signType;
   }
 
+  public getSignString(): string {
+    const signType = this.signType;
+    switch (signType) {
+      case SignType.Negative:
+        return "-";
+      case SignType.Positive:
+        return "+";
+      case SignType.None:
+        return "";
+    }
+  }
+
   public isPositive(): boolean {
     return this.signType === SignType.Positive;
   }

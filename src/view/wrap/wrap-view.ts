@@ -100,11 +100,12 @@ export class WrapView extends Phaser.GameObjects.Container {
   }
 
   private initInputToOutputArrow(): void {
-    const index = 1;
+    const index = 0;
+    const isNegative = this.wrap.getSummationSet().getSummationOperandSets()[index].isNegative();
     const y = 25;
     this.outputArrow = this.initArrow(130, y, 430, y);
     this.add(
-      new IndexedTextView(this.scene, this.formatXText(index), this.formatXIndex(index))
+      new IndexedTextView(this.scene, this.formatXText(index, isNegative), this.formatXIndex(index))
         .setAnchorX(1)
         .setPosition(130, y - 23)
     );
@@ -122,6 +123,7 @@ export class WrapView extends Phaser.GameObjects.Container {
   private initUInputArrows(): void {
     const count = this.xCount;
     const maxCount = ViewConfig.xInputs.maxCount;
+    const summationOperandSets = this.wrap.getSummationSet().getSummationOperandSets();
 
     const hasSkip = (count > maxCount);
     let skipFrom = Infinity;
@@ -146,7 +148,7 @@ export class WrapView extends Phaser.GameObjects.Container {
           epsilonAdded = true;
         }
       } else {
-        this.initXArrow(i + 1, y);
+        this.initXArrow(i, summationOperandSets[i].isNegative(), y);
         ++arrowSlotIndex;
       }
     }
@@ -186,17 +188,17 @@ export class WrapView extends Phaser.GameObjects.Container {
     );
   }
 
-  private initXArrow(index: number, y: number): void {
+  private initXArrow(index: number, isNegative: boolean, y: number): void {
     this.initArrow(130, y, 200, y);
     this.add(
-      new IndexedTextView(this.scene, this.formatXText(index), this.formatXIndex(index))
+      new IndexedTextView(this.scene, this.formatXText(index, isNegative), this.formatXIndex(index))
         .setAnchorX(1)
         .setPosition(130, y - 20)
     );
   }
 
-  private formatXText(index: number): string {
-    return "x" + StringUtils.multiply("'", index);
+  private formatXText(index: number, isNegative: boolean): string {
+    return (isNegative ? "-" : "") + "x" + StringUtils.multiply("'", index + 1);
   }
 
   private formatXIndex(_index: number): string {

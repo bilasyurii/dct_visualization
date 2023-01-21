@@ -46,13 +46,12 @@ export class LegendGenerator {
   }
 
   private mapSummationOperandSet(summationOperandSet: SummationOperandSet): string {
-    const sign = summationOperandSet.getSignString();
     const summationOperands = summationOperandSet.getSummationOperands();
 
     if (summationOperands.length === 1) {
-      return `${sign}${this.mapSummationOperand(summationOperands[0])}`;
+      return `${this.mapSummationOperand(summationOperands[0])}`;
     } else {
-      return `${sign}(${summationOperands.map((summationOperand) => this.mapSummationOperand(summationOperand)).join(", ")})`;
+      return `(${summationOperands.map((summationOperand) => this.mapSummationOperand(summationOperand)).join(", ")})`;
     }
   }
 

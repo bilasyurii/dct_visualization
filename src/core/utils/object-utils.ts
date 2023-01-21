@@ -37,6 +37,14 @@ export class ObjectUtils {
     }
   }
 
+  public static mapObjectToArray<K, V, I>(object: any, callback: (key: K, value: V) => I, ctx?: any): I[] {
+    const result: I[] = [];
+    ObjectUtils.forInObject<K, V>(object, function (key, value) {
+      result.push(callback.call(ctx, key, value));
+    });
+    return result;
+  }
+
   public static hashCode(object: any): number {
     const str = object + "";
     const length = str.length;

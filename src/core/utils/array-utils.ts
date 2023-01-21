@@ -181,4 +181,69 @@ export class ArrayUtils {
 
     return result;
   }
+
+  public static groupBy<T, K extends string | number | symbol>(arr: T[], key: (item: T) => K) {
+    return arr.reduce<Record<K, T[]>>(function (prev, curr) {
+      const groupKey = key(curr);
+      const group = prev[groupKey] || [];
+      group.push(curr);
+      return { ...prev, [groupKey]: group };
+    }, {} as Record<K, T[]>);
+  }
+
+  public static intersection<T>(a: T[], b: T[]): T[] {
+    return a.filter(function (x) {
+      return b.indexOf(x) !== -1;
+    });
+  }
+
+  public static sortedInsertIndexDesc(array: number[], value: number): number {
+    let low = 0;
+    let high = array.length;
+
+    while (low < high) {
+      const mid = low + high >>> 1; // same as ~~((low + high) * 0.5)
+
+      if (array[mid] > value) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+
+    return low;
+  }
+
+  public static sortedInsertIndexAsc(array: number[], value: number): number {
+    let low = 0;
+    let high = array.length;
+
+    while (low < high) {
+      const mid = low + high >>> 1; // same as ~~((low + high) * 0.5)
+
+      if (array[mid] < value) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+
+    return low;
+  }
+
+  public static equals<T>(a: T[], b: T[]): boolean {
+    const length = a.length;
+
+    if (length !== b.length) {
+      return false;
+    }
+
+    for (let i = 0; i < length; ++i) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }

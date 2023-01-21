@@ -27,4 +27,9 @@ export class SuperWrap extends BaseLexicalStructure {
   public addWrap(wrap: Wrap): void {
     this.wraps.push(wrap);
   }
+
+  public isShortVersion(): boolean {
+    const wraps = this.wraps;
+    return wraps.length === 1 && wraps[0].isShortVersion();
+  }
 }

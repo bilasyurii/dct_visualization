@@ -13,9 +13,11 @@ import { ISuperWrapViewConfig } from "../view/wrap/super-wrap-view-config.interf
 import { SuperWrapView } from "../view/wrap/super-wrap-view";
 import { ArrayUtils } from "../core/utils/array-utils";
 import { LegendGenerator } from "../view/legend/legend-generator";
+import { SuperWrapsOptimizer } from "../core/processing/optimization/super-wraps-optimizer";
 
 export class MainScene extends Phaser.Scene {
   private lexer: MainLexer;
+  private optimizer: SuperWrapsOptimizer;
   private legendGenerator: LegendGenerator;
   private ui: UI;
   private superWrapsData: ISuperWrapData[] = [];
@@ -29,6 +31,7 @@ export class MainScene extends Phaser.Scene {
 
   public create(): void {
     this.initLexer();
+    this.initOptimizer();
     this.initLegendGenerator();
     this.initUI();
     this.listenUI();
@@ -36,6 +39,10 @@ export class MainScene extends Phaser.Scene {
 
   private initLexer(): void {
     this.lexer = new MainLexer(new WrapLexer(true), new HierarchyLexer());
+  }
+
+  private initOptimizer(): void {
+    this.optimizer = new SuperWrapsOptimizer();
   }
 
   private initLegendGenerator(): void {
@@ -59,10 +66,12 @@ export class MainScene extends Phaser.Scene {
     const tokens = new Tokenizer().tokenize(config.data);
     const tree = this.lexer.parse(tokens);
     const superWraps = tree.getSuperWraps();
-    superWraps.forEach((superWrap) => {
-      const wraps = superWrap.getWraps();
+    const allSuperWraps = ArrayUtils.copy(superWraps, this.getSuperWraps());
 
-      if (wraps.length === 1 && wraps[0].isShortVersion()) {
+    this.optimizeSuperWraps(allSuperWraps);
+
+    superWraps.forEach((superWrap) => {
+      if (superWrap.isShortVersion()) {
         return;
       }
 
@@ -71,6 +80,7 @@ export class MainScene extends Phaser.Scene {
       };
       this.createSingleElement(superWrap, viewConfig);
     });
+
     this.updateCanvasSize();
     this.updateSuperWrapViewPositions();
     this.updateLegendText();
@@ -168,5 +178,9 @@ export class MainScene extends Phaser.Scene {
 
   private getSuperWraps(): SuperWrap[] {
     return this.superWrapsData.map((superWrapData) => superWrapData.superWrap);
+  }
+
+  private optimizeSuperWraps(superWraps: SuperWrap[]): void {
+    this.optimizer.optimize(superWraps);
   }
 }

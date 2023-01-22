@@ -18,4 +18,8 @@ export class SummationSet extends BaseLexicalStructure {
   public addSummationOperandSet(summationOperandSet: SummationOperandSet): void {
     this.summationOperandSets.push(summationOperandSet);
   }
+
+  public makeEmpty(): void {
+    this.summationOperandSets = [];
+  }
 }

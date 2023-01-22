@@ -13,4 +13,8 @@ export class SummationOperand extends BaseLexicalStructure {
   public getValue(): number {
     return this.value;
   }
+
+  public clone(): SummationOperand {
+    return new SummationOperand(this.value);
+  }
 }

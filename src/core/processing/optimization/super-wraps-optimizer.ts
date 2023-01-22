@@ -22,9 +22,68 @@ interface IIntersectionData {
 }
 
 export class SuperWrapsOptimizer {
+  private superWraps: SuperWrap[];
+
   public optimize(superWraps: SuperWrap[]): void {
-    const filtered = superWraps.filter((superWrap) => !superWrap.isShortVersion());
-    const wraps = filtered.map((superWrap) => superWrap.getWraps()).flat();
+    this.superWraps = superWraps;
+
+    this.removeShortSuperWraps();
+    this.mergeRedundantInputs();
+
+    this.superWraps = null;
+  }
+
+  private removeShortSuperWraps(): void {
+    const superWraps = this.superWraps;
+
+    for (let i = superWraps.length - 1; i >= 0; --i) {
+      if (superWraps[i].isShortVersion()) {
+        superWraps.splice(i, 1);
+      }
+    }
+  }
+
+  private mergeRedundantInputs(): void {
+    const superWraps = this.superWraps;
+
+    superWraps.forEach((superWrap) => {
+      const wraps = superWrap.getWraps();
+
+      wraps.forEach((wrap) => {
+        const sumSet = wrap.getSumSet();
+        const signedNumbers = sumSet.getSignedNumbers();
+
+        if (signedNumbers.length === 1) {
+          const summationSet = wrap.getSummationSet();
+          const summationOperandSets = summationSet.getSummationOperandSets();
+          const firstSet = summationOperandSets[0];
+          const signType = firstSet.getSignType();
+          const canBeMerged = summationOperandSets.every((set) => {
+            return (
+              set.getSignType() === signType &&
+              set.getSummationOperands().length === 1
+            );
+          });
+
+          if (canBeMerged) {
+            const summationOperandSet = new SummationOperandSet(signType);
+            summationOperandSets.forEach((set) => {
+              const operand = set.getSummationOperands()[0].clone();
+              summationOperandSet.addSummationOperand(operand);
+            });
+
+            summationSet.makeEmpty();
+            summationSet.addSummationOperandSet(summationOperandSet);
+          }
+        }
+      });
+    });
+  }
+
+  // TODO
+  private optimizeIntersections(): void {
+    const superWraps = this.superWraps;
+    const wraps = superWraps.map((superWrap) => superWrap.getWraps()).flat();
     const summationSets = wraps.map((wrap) => wrap.getSummationSet()).flat();
     const sameSignGroups = summationSets.map((summationSet) => this.groupBySameSign(summationSet)).flat();
     const intersectionsCount = this.calculateIntersectionsCount(sameSignGroups.length);

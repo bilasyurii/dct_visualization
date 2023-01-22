@@ -12,7 +12,6 @@ import { IWrapViewConfig } from "./wrap-view-config.interface";
 export class WrapView extends Phaser.GameObjects.Container {
   private wrap: Wrap;
   private config: IWrapViewConfig;
-  private nCount: number;
   private xCount: number;
   private pointsCount: number;
   private uRectangle: RectangleWithTextView;
@@ -48,9 +47,8 @@ export class WrapView extends Phaser.GameObjects.Container {
   private calculateParameters(): void {
     const wrap = this.wrap;
 
-    this.nCount = wrap.calculateNCount();
+    this.xCount = wrap.calculateXCount();
     this.pointsCount = wrap.calculatePointsCount();
-    this.xCount = this.nCount / this.pointsCount;
 
     this.isShortenedVersion = wrap.isShortVersion();
     this.shouldSkipURectangle = this.xCount === 1;

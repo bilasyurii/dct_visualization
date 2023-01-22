@@ -83,20 +83,24 @@ export class SuperWrapsOptimizer {
       const canBeSimplified = summationOperandSets.length > 2;
 
       if (canBeSimplified) {
-        const positiveSet = new SummationOperandSet(SignType.Positive);
-        const negativeSet = new SummationOperandSet(SignType.Negative);
+        const firstSet = new SummationOperandSet(summationOperandSets[0].getSignType());
+        const secondSet = new SummationOperandSet(summationOperandSets[1].getSignType());
+
+        let addToFirst = true;
 
         summationOperandSets.forEach((set) => {
-          if (set.getSignType() === SignType.Negative) {
-            negativeSet.addManyFrom(set);
+          if (addToFirst) {
+            firstSet.addManyFrom(set);
           } else {
-            positiveSet.addManyFrom(set);
+            secondSet.addManyFrom(set);
           }
+
+          addToFirst = !addToFirst;
         });
 
         summationSet.makeEmpty();
-        summationSet.addSummationOperandSet(positiveSet);
-        summationSet.addSummationOperandSet(negativeSet);
+        summationSet.addSummationOperandSet(firstSet);
+        summationSet.addSummationOperandSet(secondSet);
       }
     });
   }

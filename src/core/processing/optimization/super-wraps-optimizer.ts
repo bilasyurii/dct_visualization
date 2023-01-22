@@ -2,6 +2,7 @@ import { SignType } from "../../lexic/structures/sign-type.enum";
 import { SummationOperandSet } from "../../lexic/structures/summation-operand-set";
 import { SummationSet } from "../../lexic/structures/summation-set";
 import { SuperWrap } from "../../lexic/structures/super-wrap";
+import { Wrap } from "../../lexic/structures/wrap";
 import { ArrayUtils } from "../../utils/array-utils";
 import { Math2 } from "../../utils/math/math2";
 import { ObjectUtils } from "../../utils/object-utils";
@@ -29,6 +30,7 @@ export class SuperWrapsOptimizer {
 
     this.removeShortSuperWraps();
     this.mergeRedundantInputs();
+    this.decreaseInputsCount();
 
     this.superWraps = null;
   }
@@ -44,46 +46,68 @@ export class SuperWrapsOptimizer {
   }
 
   private mergeRedundantInputs(): void {
-    const superWraps = this.superWraps;
+    this.getAllWraps().forEach((wrap) => {
+      const sumSet = wrap.getSumSet();
+      const signedNumbers = sumSet.getSignedNumbers();
 
-    superWraps.forEach((superWrap) => {
-      const wraps = superWrap.getWraps();
+      if (signedNumbers.length === 1) {
+        const summationSet = wrap.getSummationSet();
+        const summationOperandSets = summationSet.getSummationOperandSets();
+        const firstSet = summationOperandSets[0];
+        const signType = firstSet.getSignType();
+        const canBeMerged = summationOperandSets.every((set) => {
+          return (
+            set.getSignType() === signType &&
+            set.getSummationOperands().length === 1
+          );
+        });
 
-      wraps.forEach((wrap) => {
-        const sumSet = wrap.getSumSet();
-        const signedNumbers = sumSet.getSignedNumbers();
-
-        if (signedNumbers.length === 1) {
-          const summationSet = wrap.getSummationSet();
-          const summationOperandSets = summationSet.getSummationOperandSets();
-          const firstSet = summationOperandSets[0];
-          const signType = firstSet.getSignType();
-          const canBeMerged = summationOperandSets.every((set) => {
-            return (
-              set.getSignType() === signType &&
-              set.getSummationOperands().length === 1
-            );
+        if (canBeMerged) {
+          const summationOperandSet = new SummationOperandSet(signType);
+          summationOperandSets.forEach((set) => {
+            const operand = set.getSummationOperands()[0].clone();
+            summationOperandSet.addSummationOperand(operand);
           });
 
-          if (canBeMerged) {
-            const summationOperandSet = new SummationOperandSet(signType);
-            summationOperandSets.forEach((set) => {
-              const operand = set.getSummationOperands()[0].clone();
-              summationOperandSet.addSummationOperand(operand);
-            });
-
-            summationSet.makeEmpty();
-            summationSet.addSummationOperandSet(summationOperandSet);
-          }
+          summationSet.makeEmpty();
+          summationSet.addSummationOperandSet(summationOperandSet);
         }
-      });
+      }
     });
+  }
+
+  private decreaseInputsCount(): void {
+    this.getAllWraps().forEach((wrap) => {
+      const summationSet = wrap.getSummationSet();
+      const summationOperandSets = summationSet.getSummationOperandSets();
+      const canBeSimplified = summationOperandSets.length > 2;
+
+      if (canBeSimplified) {
+        const positiveSet = new SummationOperandSet(SignType.Positive);
+        const negativeSet = new SummationOperandSet(SignType.Negative);
+
+        summationOperandSets.forEach((set) => {
+          if (set.getSignType() === SignType.Negative) {
+            negativeSet.addManyFrom(set);
+          } else {
+            positiveSet.addManyFrom(set);
+          }
+        });
+
+        summationSet.makeEmpty();
+        summationSet.addSummationOperandSet(positiveSet);
+        summationSet.addSummationOperandSet(negativeSet);
+      }
+    });
+  }
+
+  private getAllWraps(): Wrap[] {
+    return this.superWraps.map((superWrap) => superWrap.getWraps()).flat();
   }
 
   // TODO
   private optimizeIntersections(): void {
-    const superWraps = this.superWraps;
-    const wraps = superWraps.map((superWrap) => superWrap.getWraps()).flat();
+    const wraps = this.superWraps.map((superWrap) => superWrap.getWraps()).flat();
     const summationSets = wraps.map((wrap) => wrap.getSummationSet()).flat();
     const sameSignGroups = summationSets.map((summationSet) => this.groupBySameSign(summationSet)).flat();
     const intersectionsCount = this.calculateIntersectionsCount(sameSignGroups.length);

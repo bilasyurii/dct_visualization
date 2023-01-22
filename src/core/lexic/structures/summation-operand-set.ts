@@ -56,4 +56,9 @@ export class SummationOperandSet extends BaseLexicalStructure {
   public addSummationOperand(summationOperand: SummationOperand): void {
     this.summationOperands.push(summationOperand);
   }
+
+  public addManyFrom(summationOperandSet: SummationOperandSet): void {
+    const operands = summationOperandSet.getSummationOperands();
+    operands.forEach((operand) => this.addSummationOperand(operand.clone()));
+  }
 }

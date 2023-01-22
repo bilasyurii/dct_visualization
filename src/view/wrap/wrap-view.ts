@@ -16,8 +16,10 @@ export class WrapView extends Phaser.GameObjects.Container {
   private xCount: number;
   private pointsCount: number;
   private uRectangle: RectangleWithTextView;
+  private ccRectangle: RectangleWithTextView;
   private outputArrow: Arrow;
   private isShortenedVersion: boolean;
+  private shouldSkipURectangle: boolean;
 
   constructor(scene: Scene, wrap: Wrap, config: IWrapViewConfig) {
     super(scene);
@@ -34,8 +36,8 @@ export class WrapView extends Phaser.GameObjects.Container {
     if (this.isShortenedVersion) {
       return 50;
     } else {
-      const uRectangle = this.uRectangle;
-      return uRectangle.y + uRectangle.getRectangle().getHeight();
+      const rectangle = this.uRectangle || this.ccRectangle;
+      return rectangle.y + rectangle.getRectangle().getHeight();
     }
   }
 
@@ -45,16 +47,22 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private calculateParameters(): void {
     const wrap = this.wrap;
+
     this.nCount = wrap.calculateNCount();
     this.pointsCount = wrap.calculatePointsCount();
     this.xCount = this.nCount / this.pointsCount;
+
     this.isShortenedVersion = wrap.isShortVersion();
+    this.shouldSkipURectangle = this.xCount === 1;
   }
 
   private initRectangles(): void {
     if (!this.isShortenedVersion) {
-      this.initURectangle();
-      this.initPRectangle();
+      if (!this.shouldSkipURectangle) {
+        this.initURectangle();
+      }
+
+      this.initCCRectangle();
     }
   }
 
@@ -63,9 +71,15 @@ export class WrapView extends Phaser.GameObjects.Container {
       this.initInputToOutputArrow();
     } else {
       this.initSumArrow();
-      this.initUInputArrows();
-      this.initUtoPArrow();
-      this.initPOutputArrow();
+
+      if (this.shouldSkipURectangle) {
+        this.initCCInputArrow();
+      } else {
+        this.initUInputArrows();
+        this.initUtoCCArrow();
+      }
+
+      this.initCCOutputArrow();
     }
   }
 
@@ -85,18 +99,19 @@ export class WrapView extends Phaser.GameObjects.Container {
     uRectangle.setPosition(200, 80);
   }
 
-  private initPRectangle(): void {
+  private initCCRectangle(): void {
     const width = 70;
     const height = 55;
     const text = `CC\n${this.pointsCount}p`;
-    const pRectangle = new RectangleWithTextView(
+    const ccRectangle = new RectangleWithTextView(
       this.scene,
       text,
       width,
       height
     );
-    this.add(pRectangle);
-    pRectangle.setPosition(300, 50);
+    this.ccRectangle = ccRectangle;
+    this.add(ccRectangle);
+    ccRectangle.setPosition(300, 50);
   }
 
   private initInputToOutputArrow(): void {
@@ -117,6 +132,18 @@ export class WrapView extends Phaser.GameObjects.Container {
       new IndexedTextView(this.scene, this.formatSum(), "")
         .setAnchorX(1)
         .setPosition(280, 35)
+    );
+  }
+
+  private initCCInputArrow(): void {
+    const index = 0;
+    const isNegative = this.wrap.getSummationSet().getSummationOperandSets()[index].isNegative();
+    const y = 90;
+    this.outputArrow = this.initArrow(130, y, 300, y);
+    this.add(
+      new IndexedTextView(this.scene, this.formatXText(index, isNegative), this.formatXIndex(index))
+        .setAnchorX(1)
+        .setPosition(130, y - 23)
     );
   }
 
@@ -154,7 +181,7 @@ export class WrapView extends Phaser.GameObjects.Container {
     }
   }
 
-  private initUtoPArrow(): void {
+  private initUtoCCArrow(): void {
     this.initArrow(250, 90, 300, 90, true);
     this.add(
       new IndexedTextView(this.scene, this.pointsCount + "", "")
@@ -163,7 +190,7 @@ export class WrapView extends Phaser.GameObjects.Container {
     );
   }
 
-  private initPOutputArrow(): void {
+  private initCCOutputArrow(): void {
     this.outputArrow = this.initArrow(370, 75, 430, 75, true);
     this.add(
       new IndexedTextView(this.scene, this.pointsCount + "", "")

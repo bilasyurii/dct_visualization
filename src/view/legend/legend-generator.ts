@@ -92,14 +92,14 @@ export class LegendGenerator {
 
     for (let i = 0; i < data.length; ++i) {
       const item = data[i];
-      const { operandsRaw, signType } = item;
+      const { operandsRaw } = item;
 
       const items: ISummationOperandSetData[] = [];
 
       for (let j = data.length - 1; j > i; --j) {
         const otherItem = data[j];
 
-        if (otherItem.signType === signType && ArrayUtils.equals(operandsRaw, otherItem.operandsRaw)) {
+        if (ArrayUtils.equals(operandsRaw, otherItem.operandsRaw)) {
           items.push(otherItem);
           data.splice(j, 1);
         }

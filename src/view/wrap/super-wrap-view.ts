@@ -12,15 +12,13 @@ export class SuperWrapView extends Phaser.GameObjects.Container {
   private superWrap: SuperWrap;
   private wrapViews: WrapView[];
   private uRectangle: RectangleWithTextView;
-  private config: ISuperWrapViewConfig;
   private height_: number;
   private pointsCount: number;
 
-  constructor(scene: Scene, superWrap: SuperWrap, config: ISuperWrapViewConfig) {
+  constructor(scene: Scene, superWrap: SuperWrap, _config: ISuperWrapViewConfig) {
     super(scene);
 
     this.superWrap = superWrap;
-    this.config = config;
 
     this.calculateParameters();
     this.initWraps();

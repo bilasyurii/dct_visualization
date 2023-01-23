@@ -32,6 +32,10 @@ export class SuperWrapsOptimizer {
     this.mergeRedundantInputs();
     this.decreaseInputsCount();
 
+    if (Math.random() < 0) {
+      this.optimizeIntersections();
+    }
+
     this.superWraps = null;
   }
 

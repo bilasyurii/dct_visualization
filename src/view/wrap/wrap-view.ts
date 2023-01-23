@@ -1,5 +1,4 @@
 import { ViewConfig } from "../../config/view-config";
-import { SignType } from "../../core/lexic/structures/sign-type.enum";
 import { Wrap } from "../../core/lexic/structures/wrap";
 import { Math2 } from "../../core/utils/math/math2";
 import { StringUtils } from "../../core/utils/string-utils";
@@ -273,16 +272,5 @@ export class WrapView extends Phaser.GameObjects.Container {
 
   private getSkipTo(count: number, maxCount: number): number {
     return count - 1;
-  }
-
-  private getSignText(signType: SignType): string {
-    switch (signType) {
-      case SignType.Negative:
-        return "-";
-      case SignType.Positive:
-        return "+";
-      case SignType.None:
-        return "";
-    }
   }
 }

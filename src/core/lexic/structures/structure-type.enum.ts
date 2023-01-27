@@ -11,4 +11,5 @@ export enum StructureType {
   SummationSet = "SummationSet", // {+(x(14), x(3)) -(x(2), x(7))}
   Wrap = "Wrap", // everything together
   SuperWrap = "SuperWrap", // a set of wraps
+  LexicalTree = "LexicalTree", // a collection of superwraps
 }

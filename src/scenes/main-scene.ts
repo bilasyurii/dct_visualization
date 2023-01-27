@@ -88,14 +88,14 @@ export class MainScene extends Phaser.Scene {
 
   private createSingleElement(superWrap: SuperWrap, viewConfig: ISuperWrapViewConfig): void {
     const view = this.createSuperWrapView(superWrap, viewConfig);
-    const wrapData: ISuperWrapData = {
+    const superWrapData: ISuperWrapData = {
       id: this.nextId++,
       superWrap,
       view,
       viewConfig,
     };
-    this.superWrapsData.push(wrapData);
-    this.ui.onWrapAdded(wrapData);
+    this.superWrapsData.push(superWrapData);
+    this.ui.onSuperWrapAdded(superWrapData);
   }
 
   private createSuperWrapView(superWrap: SuperWrap, viewConfig: ISuperWrapViewConfig): SuperWrapView {

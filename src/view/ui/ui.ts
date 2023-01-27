@@ -26,7 +26,7 @@ export class UI {
     this.listenUIElements();
   }
 
-  public onWrapAdded(superWrapData: ISuperWrapData): void {
+  public onSuperWrapAdded(superWrapData: ISuperWrapData): void {
     const element = this.createElement();
     const elementData: IElementData = {
       superWrapData,
